@@ -5,6 +5,7 @@
 #include "EspWifiClient.h"
 #include "RGBLed.h"
 #include "PlantowerSensor.h"
+#include "MCPExtender.h"
 
 String server = "194.58.70.17";
 uint16_t port = 5100;
@@ -18,6 +19,7 @@ BME280Sensor* bme;
 EspWifiClient* esp;
 RGBLed* rgb;
 PlantowerSensor* plantower;
+MCPExtender* mcp;
 
 String dConsole;
 
@@ -47,6 +49,13 @@ void setup() {
 
   esp = new EspWifiClient(&Serial);
   esp->initEsp();
+
+  mcp = new MCPExtender(0x20);
+  mcp->connect();
+  mcp->pinMode(MCP_A0, OUTPUT);
+  mcp->pinMode(MCP_B0, OUTPUT);
+  mcp->pinMode(MCP_A1, INPUT);
+  mcp->pinMode(MCP_B1, INPUT);
 }
 
 char* floatToString(float number, int widthBeforeDot, int widthAfterDot = 2){
@@ -77,7 +86,7 @@ void loop() {
   lcd->print(str);
   delete measureString;
   delete str;
-
+/*
   PlantowerSensor::PmsData pmsData = plantower->readDataSyncronioslyAndSleep();
   dConsole="1.0=";
   dConsole+=pmsData.PM_1_0;
@@ -100,6 +109,15 @@ void loop() {
     dConsole+="WIFI FAILURE";
   } 
   esp->disconnectWifi();
+*/
+dConsole = "a1: ";
+int a1 = mcp->digitalRead(MCP_A1);
+int b1 = mcp->digitalRead(MCP_B1);
+dConsole += a1;
+dConsole += "; b1: ";
+dConsole += b1;
+mcp->digitalWrite(MCP_A0, HIGH);
+mcp->digitalWrite(MCP_B0, HIGH);
 
   str = new char[16];
   sprintf(str, "RAM: %d   ", freeMemory());
@@ -115,7 +133,7 @@ void loop() {
         oled->print(dConsole, true);
   } 
 
-  //delay(5000);
+  delay(2000);
 }
 
 
