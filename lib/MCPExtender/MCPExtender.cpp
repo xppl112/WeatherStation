@@ -8,12 +8,7 @@ MCPExtender::MCPExtender(uint8_t i2c_address)
 }
 
 void MCPExtender::connect(){
-    _mcp->begin(_i2c_address);
-    /*Wire.begin();
-    Wire.beginTransmission(0x20);
-    Wire.write(0x00);
-    Wire.write(0x00);
-    Wire.endTransmission();*/
+    _mcp->begin((uint8_t)(_i2c_address - 0x20));
 }
 
 /*!
@@ -36,15 +31,4 @@ uint8_t MCPExtender::digitalRead(uint8_t pin)
 void MCPExtender::digitalWrite(uint8_t pin, uint8_t value)
 {
     _mcp->digitalWrite(pin, value);
-   /* Wire.beginTransmission(0x20);
-    Wire.write(0x12);
-    Wire.write(0xfe);
-    Wire.write(0xfd);
-    Wire.write(0xfb);
-    Wire.write(0xf7);
-    Wire.write(0xef);
-    Wire.write(0xdf);
-    Wire.write(0xbf);
-    Wire.write(0x7f);
-    Wire.endTransmission();*/
 }
