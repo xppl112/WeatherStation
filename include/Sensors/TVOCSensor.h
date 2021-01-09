@@ -1,0 +1,8 @@
+class TVOCSensor
+{
+public:
+
+private:
+    
+
+};

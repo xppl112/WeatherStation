@@ -1,0 +1,8 @@
+class ScreenPrinter
+{
+public:
+
+private:
+    
+
+};

@@ -1,0 +1,8 @@
+class IndoorMeteoSensor
+{
+public:
+
+private:
+    
+
+};
