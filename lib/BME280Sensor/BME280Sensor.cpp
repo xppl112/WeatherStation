@@ -19,7 +19,7 @@ bool BME280Sensor::connect(bool waitUntilConnected){
     return true;    
 }
 
-BME280Sensor::BME280Data BME280Sensor::readData()
+BME280Data BME280Sensor::readData()
 {
     BME280Data data { false };    
 

@@ -5,7 +5,7 @@
 #include "Stream.h"
 
 static const uint32_t PMS_READ_DELAY = 30000;
-static PlantowerSensor::PmsData FAILED_DATA = PlantowerSensor::PmsData { false };
+static PmsData FAILED_DATA = PmsData { false };
 
 PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin)
 {
@@ -52,7 +52,7 @@ void PlantowerSensor::wakeUp()
     isInSleepMode = false;
 }
 
-PlantowerSensor::PmsData PlantowerSensor::readData()
+PmsData PlantowerSensor::readData()
 {
     if(!isConnected) return FAILED_DATA;
 
@@ -76,7 +76,7 @@ PlantowerSensor::PmsData PlantowerSensor::readData()
     return FAILED_DATA;
 }
 
-PlantowerSensor::PmsData PlantowerSensor::readDataSyncronioslyAndSleep()
+PmsData PlantowerSensor::readDataSyncronioslyAndSleep()
 {
     if(!isConnected) return FAILED_DATA;
 

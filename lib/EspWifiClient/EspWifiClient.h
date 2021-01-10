@@ -2,15 +2,15 @@
 #include <stream.h>
 #include "WiFiEspClient.h"
 
+struct HttpResponse {
+    bool success;
+    uint8_t statusCode;
+    String payload;
+};
+
 class EspWifiClient
 {
 public:
-  struct HttpResponse {
-      bool success;
-      uint8_t statusCode;
-      String payload;
-  };
-
   EspWifiClient(uint8_t pinRx, uint8_t pinTx);
   EspWifiClient(Stream* stream);
 
@@ -19,7 +19,7 @@ public:
   bool connectWifi(const char* ssid, const char* password, uint8_t timeoutSeconds = 10);
   void disconnectWifi();  
 
-  HttpResponse sendGetRequest(String server, uint16_t port, String query, uint8_t timeoutSeconds = 5);
+  HttpResponse sendGetRequest(String server, uint16_t port, String query, uint8_t timeoutSeconds = 10);
 
   bool isEspReady;
   bool isWifiConnected;

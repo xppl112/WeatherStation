@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <stdint.h>
 #include <ss_oled.h>
 

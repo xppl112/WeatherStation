@@ -1,7 +1,7 @@
-#include <stdint.h>
-#include "UI/LEDIndicators.h"
+#include "UI/LEDIndicatorsController.h"
 #include "UI/MenuManager.h"
-#include "UI/ScreenPrinter.h"
+#include "UI/ScreenController.h"
+#include "Models/WeatherMonitorData.h"
 
 class UIController
 {
@@ -11,7 +11,7 @@ public:
     void onWeatherUpdated(WeatherMonitorData weatherMonitorData);
 
 private:
-    MenuManager* menuManager;
-    ScreenPrinter* screenPrinter;
-    LEDIndicators* ledIndicators;
+    MenuManager* _menuManager;
+    ScreenController* _screen;
+    LEDIndicatorsController* _ledIndicators;
 };

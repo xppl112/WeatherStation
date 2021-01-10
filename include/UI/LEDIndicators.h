@@ -1,8 +1,0 @@
-class LEDIndicators
-{
-public:
-
-private:
-    
-
-};

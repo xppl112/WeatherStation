@@ -58,7 +58,7 @@ void EspWifiClient::disconnectWifi() {
     isWifiConnected = false;
 }
 
-EspWifiClient::HttpResponse EspWifiClient::sendGetRequest(String server, uint16_t port, String query, uint8_t timeoutSeconds){
+HttpResponse EspWifiClient::sendGetRequest(String server, uint16_t port, String query, uint8_t timeoutSeconds){
     HttpResponse httpResponse;
 
     HttpClient* client = new HttpClient(*_esp, server.c_str(), port);

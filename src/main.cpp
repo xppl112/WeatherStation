@@ -1,25 +1,29 @@
 #include <Arduino.h>
 #include "ApplicationServices/WeatherMonitor.h"
 #include "ApplicationServices/UIController.h"
+#include "ApplicationServices/BackendIntegrator.h"
 
 WeatherMonitor* weatherMonitor;
 UIController* uiController;
+BackendIntegrator* backendIntegrator;
+void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData);
 
 void setup() {
-    weatherMonitor = new WeatherMonitor();
     uiController = new UIController();
-    weatherMonitor->subscribeOnUpdate(uiController->onWeatherUpdated);
-    weatherMonitor->subscribeOnUpdate(serverIntegration->onWeatherUpdated);
-    //weatherMonitor->OnUpdate(OnWeatherUpdated);
+    weatherMonitor = new WeatherMonitor();
+    backendIntegrator = new BackendIntegrator();
+
+    weatherMonitor->addUpdatedEventHandler(onWeatherUpdatedEventHandler);
+    weatherMonitor->run();
 }
 
 void loop() {
     uiController->updateInputs();
+    weatherMonitor->updateTimers();
+    backendIntegrator->updateTimers();
 }
 
-/*
-void onWeatherUpdated(WeatherMonitorData weatherMonitorData){
+void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData){
     uiController->onWeatherUpdated(weatherMonitorData);
-    serverIntegration->onWeatherUpdated(weatherMonitorData);
+    backendIntegrator->onWeatherUpdated(weatherMonitorData);
 }
-*/

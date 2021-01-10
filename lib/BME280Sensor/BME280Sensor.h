@@ -3,17 +3,17 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
+struct BME280Data {
+  bool isDataReceived;
+
+  float pressureInHPascals;
+  float temperatureCelsium;
+  float humidityPercent;
+};
+
 class BME280Sensor
 {
 public:
-  struct BME280Data {
-    bool isDataReceived;
-
-    float pressureInHPascals;
-    float temperatureCelsium;
-    float humidityPercent;
-  };
-
   BME280Sensor(uint8_t i2c_address);
 
   bool connect(bool waitUntilConnected = false);

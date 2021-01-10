@@ -1,10 +1,17 @@
-#include "BME280Sensor.h"
+#include "Sensors/OutdoorMeteoSensor.h"
 
-BME280Sensor* bme;
+OutdoorMeteoSensor::OutdoorMeteoSensor(uint8_t bme_i2c_address){
+    _sensor =  new BME280Sensor(bme_i2c_address);
+}
 
-  bme = new BME280Sensor(0x76);
-  bme->connect();
+void OutdoorMeteoSensor::connect(){
+    _sensor->connect();
+}
 
+BME280Data OutdoorMeteoSensor::getData(){
+    if(!_sensor->isConnected)
+        return;//TODO: return error
 
-
- BME280Sensor::BME280Data data = bme->readData();
+     BME280Data data = _sensor->readData();
+     return data;
+}

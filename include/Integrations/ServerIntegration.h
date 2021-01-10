@@ -1,8 +1,0 @@
-class ServerIntegration
-{
-public:
-
-private:
-    
-
-};
