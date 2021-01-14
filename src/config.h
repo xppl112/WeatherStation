@@ -23,8 +23,9 @@ struct BackendClientConfig {
     const static uint16_t ServerPort = 5100;
     const char* ServerApiGetTimeUrl = "/api/time";
     const char* ServerApiPostWeatherDataUrl = "/api/weather";
-
+    const char* ServerApiPostHeatlthStatusUrl = "/api/status";
 };
+
 const uint8_t WEATHER_MONITOR_INTERVAL_SECONDS = 60;
 const uint8_t WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 30;
 

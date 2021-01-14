@@ -6,6 +6,7 @@ public:
     BackendIntegrator();
     void updateTimers();
     void onWeatherUpdated(WeatherMonitorData weatherMonitorData);
+    unsigned long getServerTime();
     void resetModule();
 
 private:

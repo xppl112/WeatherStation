@@ -9,9 +9,11 @@ void OutdoorMeteoSensor::connect(){
 }
 
 BME280Data OutdoorMeteoSensor::getData(){
-    if(!_sensor->isConnected)
-        return;//TODO: return error
+    BME280Data data {.isDataReceived = false};
 
-     BME280Data data = _sensor->readData();
+    if(!_sensor->isConnected)
+        return data;//TODO: set healthcheck
+
+     data = _sensor->readData();
      return data;
 }

@@ -13,7 +13,13 @@ void UIController::updateInputs() {
 }
 
 void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
+    _currentWeather = weatherMonitorData;
+    showCurrentWeather();
+}
+
+void UIController::showCurrentWeather(){
     _screen->showWeather();
     _ledIndicators->setPollutionLevel();
     _ledIndicators->setStatusLed();
 }
+

@@ -1,8 +1,10 @@
-#include "SoftwareSerial.h"
+//#include "SoftwareSerial.h"
 #include "EspWifiClient.h"
 #include "WiFiEspClient.h"
 #include "WiFiEsp.h"
 #include "HttpClient.h"
+
+#define JSON_CONTENT_TYPE "application/json"
 
 EspWifiClient::EspWifiClient(uint8_t pinRx, uint8_t pinTx){
     _pinRx = pinRx;
@@ -18,9 +20,9 @@ EspWifiClient::EspWifiClient(Stream* stream){
 }
 
 bool EspWifiClient::initEsp(bool waitUntilConnected) {
-    if(!_espSerial){
+ /*   if(!_espSerial){
         _espSerial = new SoftwareSerial(_pinRx, _pinTx);
-    }
+    }*/
 
     _esp = new WiFiEspClient();
     WiFi.init(_espSerial);
@@ -58,13 +60,29 @@ void EspWifiClient::disconnectWifi() {
     isWifiConnected = false;
 }
 
-HttpResponse EspWifiClient::sendGetRequest(String server, uint16_t port, String query, uint8_t timeoutSeconds){
+HttpResponse EspWifiClient::sendGetRequest(String server, uint16_t port, String urlResource, uint8_t timeoutSeconds){
     HttpResponse httpResponse;
 
     HttpClient* client = new HttpClient(*_esp, server.c_str(), port);
     client->setHttpResponseTimeout(timeoutSeconds * 1000);
 
-    if(client->get(query) == 0){
+    if(client->get(urlResource) == 0){
+        httpResponse.statusCode = client->responseStatusCode();
+        httpResponse.payload = client->responseBody();
+    }
+    delete(client);
+
+    httpResponse.success = httpResponse.statusCode != 0 ? true : false;
+    return httpResponse;
+}
+
+HttpResponse EspWifiClient::sendPostJsonRequest(String server, uint16_t port, String urlResource, String jsonPayload, uint8_t timeoutSeconds){
+    HttpResponse httpResponse;
+
+    HttpClient* client = new HttpClient(*_esp, server.c_str(), port);
+    client->setHttpResponseTimeout(timeoutSeconds * 1000);
+
+    if(client->post(urlResource, JSON_CONTENT_TYPE, jsonPayload) == 0){
         httpResponse.statusCode = client->responseStatusCode();
         httpResponse.payload = client->responseBody();
     }

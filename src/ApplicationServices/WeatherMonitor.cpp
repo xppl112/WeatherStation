@@ -1,5 +1,8 @@
 #include "ApplicationServices/WeatherMonitor.h"
 #include "config.h"
+#include "Models/GlobalSystemState.h"
+
+extern GlobalSystemState* globalSystemState;
 
 WeatherMonitor::WeatherMonitor(){
     _timer = new Ticker(0);    
@@ -31,18 +34,33 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 
 void WeatherMonitor::startMeasuring(){
     _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS);
-
+    state = MEASURING;
+    _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
+    
     _airParticiplesSensor->beginMeasurement();
 }
 
 void WeatherMonitor::finishMeasuring(){
     _timer->interval(WEATHER_MONITOR_INTERVAL_SECONDS);
-    WeatherMonitorData data;
+    WeatherMonitorData data {.isDataReceived = false};
 
     PmsData airParticiplesData = _airParticiplesSensor->endMeasurement();
     BME280Data outdoorMeteoData = _outdoorMeteoSensor->getData();
 
-    data.isDataReceived = true;
+    if(airParticiplesData.isDataReceived && outdoorMeteoData.isDataReceived){
+        data.isDataReceived = true;
+        data.timeStampOfStart = _startMeasuringTimestamp;
+        data.timeStampOfFinish = globalSystemState->getCurrentTimestamp();
 
+        data.PM1_0 = airParticiplesData.PM_1_0;
+        data.PM2_5 = airParticiplesData.PM_2_5;
+        data.PM_10_0 = airParticiplesData.PM_10_0;
+
+        data.temperatureOutside = outdoorMeteoData.temperatureCelsium;
+        data.humidityOutside = outdoorMeteoData.humidityPercent;
+        data.pressureOutside = outdoorMeteoData.pressureInHPascals;
+    }
+
+    state = IDLE;
     if(_onUpdateCallback != NULL) _onUpdateCallback(data);
 }

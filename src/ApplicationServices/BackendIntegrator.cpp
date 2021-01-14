@@ -11,8 +11,12 @@ void BackendIntegrator::updateTimers(){
 
 }
 
+unsigned long BackendIntegrator::getServerTime(){
+    return _backendClient->GetServerTime();
+}
+
 void BackendIntegrator::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
-    _backendClient->GetServerTime();
+    _backendClient->SendWeatherData(weatherMonitorData);
 }
 
 void BackendIntegrator::resetModule(){

@@ -15,7 +15,7 @@ PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin)
     isConnected = false;
 }
 
-bool PlantowerSensor::connect(bool waitUntilConnected = false)
+bool PlantowerSensor::connect(bool waitUntilConnected)
 {
     // Create serial bus using Software serial
     _serial = new SoftwareSerial(_rxPin, _txPin); 
@@ -34,6 +34,8 @@ bool PlantowerSensor::connect(bool waitUntilConnected = false)
     _pms->sleep();
     isInSleepMode = true;
     isConnected = true;
+
+    return isConnected;
 }
 
 void PlantowerSensor::sleep()

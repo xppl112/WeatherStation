@@ -30,4 +30,6 @@ private:
     TVOCSensor* _tvocSensor;
 
     Ticker* _timer;
+
+    unsigned long _startMeasuringTimestamp;
 };

@@ -3,7 +3,6 @@
 // Released under Apache License, version 2.0
 
 #include "HttpClient.h"
-#include "b64.h"
 
 // Initialize constants
 const char* HttpClient::kUserAgent = "Arduino/2.2.0";
@@ -202,7 +201,7 @@ void HttpClient::sendHeader(const char* aHeaderName, const int aHeaderValue)
     iClient->print(": ");
     iClient->println(aHeaderValue);
 }
-
+/*
 void HttpClient::sendBasicAuth(const char* aUser, const char* aPassword)
 {
     // Send the initial part of this header line
@@ -251,7 +250,7 @@ void HttpClient::sendBasicAuth(const char* aUser, const char* aPassword)
     // And end the header we've sent
     iClient->println();
 }
-
+*/
 void HttpClient::finishHeaders()
 {
     iClient->println();
