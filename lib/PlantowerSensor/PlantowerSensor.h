@@ -1,5 +1,4 @@
  #include <stdint.h>
- #include <SoftwareSerial.h>
  #include "PMS.h"
 
 struct PmsData {
@@ -30,6 +29,6 @@ private:
     uint8_t _rxPin;
     uint8_t _txPin;
     uint8_t _setPin;
-    SoftwareSerial* _serial;
+    Stream* _serial;
     PMS* _pms;
 };

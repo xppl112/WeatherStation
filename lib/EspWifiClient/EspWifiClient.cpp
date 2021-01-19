@@ -1,39 +1,10 @@
-//#include "SoftwareSerial.h"
 #include "EspWifiClient.h"
-#include "WiFiEspClient.h"
-#include "WiFiEsp.h"
-#include "HttpClient.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
-#define JSON_CONTENT_TYPE "application/json"
-
-EspWifiClient::EspWifiClient(uint8_t pinRx, uint8_t pinTx){
-    _pinRx = pinRx;
-    _pinTx = pinTx;
-
+EspWifiClient::EspWifiClient(){
     _wifiStatus = WL_IDLE_STATUS;
-    isEspReady = false;
     isWifiConnected = false;
-}
-
-EspWifiClient::EspWifiClient(Stream* stream){
-    _espSerial = stream;
-}
-
-bool EspWifiClient::initEsp(bool waitUntilConnected) {
- /*   if(!_espSerial){
-        _espSerial = new SoftwareSerial(_pinRx, _pinTx);
-    }*/
-
-    _esp = new WiFiEspClient();
-    WiFi.init(_espSerial);
-
-    uint8_t status =  WiFi.status();
-    if(status == WL_NO_SHIELD) {
-        isEspReady = false;
-    }
-    else isEspReady = true;
-
-    return isEspReady;
 }
 
 bool EspWifiClient::connectWifi(const char* ssid, const char* password, uint8_t timeoutSeconds){
@@ -41,53 +12,50 @@ bool EspWifiClient::connectWifi(const char* ssid, const char* password, uint8_t 
     _wifiPassword = password;
     isWifiConnected = false;
 
-    uint8_t secondsElapsed = 0;
-    while ( _wifiStatus != WL_CONNECTED) {
-        _wifiStatus = WiFi.begin(ssid, password);
-        if( _wifiStatus == WL_CONNECTED) break;
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    _wifiStatus = WiFi.waitForConnectResult(timeoutSeconds * 1000);
 
-        secondsElapsed++;
-        if(secondsElapsed >= timeoutSeconds) return false;
-        delay(1000);
-    }
-
-    isWifiConnected = true;
+    isWifiConnected = WiFi.isConnected();
     return isWifiConnected;
 }
 
 void EspWifiClient::disconnectWifi() {
-    _wifiStatus = WiFi.disconnect();
+    _wifiStatus = WiFi.disconnect(true);
     isWifiConnected = false;
 }
 
-HttpResponse EspWifiClient::sendGetRequest(String server, uint16_t port, String urlResource, uint8_t timeoutSeconds){
+HttpResponse EspWifiClient::sendGetRequest(String host, String resource, uint8_t timeoutSeconds){
     HttpResponse httpResponse;
 
-    HttpClient* client = new HttpClient(*_esp, server.c_str(), port);
-    client->setHttpResponseTimeout(timeoutSeconds * 1000);
+    HTTPClient client;
+    client.begin(host + resource);
+    client.setTimeout(timeoutSeconds * 1000);
 
-    if(client->get(urlResource) == 0){
-        httpResponse.statusCode = client->responseStatusCode();
-        httpResponse.payload = client->responseBody();
+    int resultCode = client.GET();
+    if(resultCode != -1){
+        httpResponse.statusCode = resultCode;
+        httpResponse.payload = client.getString();
     }
-    delete(client);
 
-    httpResponse.success = httpResponse.statusCode != 0 ? true : false;
+    httpResponse.success = resultCode != -1 ? true : false;
     return httpResponse;
 }
 
-HttpResponse EspWifiClient::sendPostJsonRequest(String server, uint16_t port, String urlResource, String jsonPayload, uint8_t timeoutSeconds){
+HttpResponse EspWifiClient::sendPostJsonRequest(String host, String resource, String jsonPayload, uint8_t timeoutSeconds){
     HttpResponse httpResponse;
 
-    HttpClient* client = new HttpClient(*_esp, server.c_str(), port);
-    client->setHttpResponseTimeout(timeoutSeconds * 1000);
+    HTTPClient client;
+    client.begin(host + resource);
+    client.addHeader("Content-Type", "application/json");
+    client.setTimeout(timeoutSeconds * 1000);    
 
-    if(client->post(urlResource, JSON_CONTENT_TYPE, jsonPayload) == 0){
-        httpResponse.statusCode = client->responseStatusCode();
-        httpResponse.payload = client->responseBody();
+    int resultCode = client.POST(jsonPayload);
+    if(resultCode != -1){
+        httpResponse.statusCode = resultCode;
+        httpResponse.payload = client.getString();
     }
-    delete(client);
 
-    httpResponse.success = httpResponse.statusCode != 0 ? true : false;
+    httpResponse.success = resultCode != -1 ? true : false;
     return httpResponse;
 }

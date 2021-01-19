@@ -1,15 +1,19 @@
-//#include "LCD.h"
 #include "OLED.h"
+#include "Models/WeatherMonitorData.h"
 
 class ScreenController
 {
 public:
     ScreenController();
     void resetScreen();
-    void showWeather();
+    void clearScreen();
+    void showSplashScreen();
+    void showIndoorWeather(WeatherMonitorData weatherData);
+    void showOutdoorTemperature(WeatherMonitorData weatherData);
+    void showOutdoorHumidityAndPressure(WeatherMonitorData weatherData);
+    void showAirQualityMeasurements(WeatherMonitorData weatherData);
+    void showAirPollution(WeatherMonitorData weatherData);
 
 private:
-    //LCD* lcd;
     OLED* _oled;
-
 };

@@ -2,6 +2,9 @@
 #include <Wire.h>
 #include "Adafruit_MCP23017.h"
 
+#ifndef MCPEXTENDER_H
+#define MCPEXTENDER_H
+
 #define MCP_A0 0
 #define MCP_A1 1
 #define MCP_A2 2
@@ -33,3 +36,5 @@ private:
   Adafruit_MCP23017* _mcp;
   uint8_t _i2c_address;
 };
+
+#endif

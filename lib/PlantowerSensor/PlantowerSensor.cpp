@@ -18,8 +18,9 @@ PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin)
 bool PlantowerSensor::connect(bool waitUntilConnected)
 {
     // Create serial bus using Software serial
-    _serial = new SoftwareSerial(_rxPin, _txPin); 
-    _serial->begin(PMS::BAUD_RATE); 
+    //_serial = new SoftwareSerial(_rxPin, _txPin); 
+    Serial.begin(PMS::BAUD_RATE); 
+    _serial = &Serial;
 
     _pms = new PMS(*_serial);    
 

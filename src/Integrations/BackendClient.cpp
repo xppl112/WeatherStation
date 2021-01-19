@@ -2,30 +2,28 @@
 
 BackendClient::BackendClient(BackendClientConfig config){
     _config = config;
-    _esp = new EspWifiClient(&Serial);
+    _esp = new EspWifiClient();
 }
 
-void BackendClient::resetModule(){
-    _esp->initEsp();
-}
+bool BackendClient::SendWeatherData(WeatherMonitorData weatherData) {
+    if(connectWifi()){
+        HttpResponse response = _esp->sendPostJsonRequest(
+            _config.ServerHost, 
+            _config.ServerApiPostWeatherDataUrl,
+            weatherData.toJson());
 
-bool BackendClient::SendWeatherData(WeatherMonitorData weatherData) {    
-    connectWifi();
-    HttpResponse response = _esp->sendPostJsonRequest(
-        _config.ServerHost, 
-        _config.ServerPort, 
-        _config.ServerApiPostWeatherDataUrl,
-        weatherData.serializeJson());
+        disconnectWifi();
+        return response.statusCode == 200;
+    }
 
-    disconnectWifi();
-    return response.statusCode == 200;
+    //TODO: ERROR WIFI CONNECTION    
+    return false;
 }
 
 int BackendClient::GetServerTime(){
     connectWifi();
     HttpResponse response = _esp->sendGetRequest(
         _config.ServerHost, 
-        _config.ServerPort, 
         _config.ServerApiGetTimeUrl);
     disconnectWifi();
     return atoi(response.payload.c_str());

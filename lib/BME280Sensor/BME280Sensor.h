@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <Wire.h>
-#include <BME280_t.h>
+#include "Adafruit_BME280.h"
 
 struct BME280Data {
   bool isDataReceived;
@@ -21,6 +21,6 @@ public:
   bool isConnected;
 
 private:
-  BME280<>* _bme;
+  Adafruit_BME280* _bme;
   uint8_t _i2c_address;
 };

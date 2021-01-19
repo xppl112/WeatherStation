@@ -1,10 +1,11 @@
 #include "ApplicationServices/BackendIntegrator.h"
-#include "config.h"
+#include "GlobalObjects/GlobalSystemState.h"
+#include "Config.h"
+extern GlobalSystemState* globalSystemState;
 
 BackendIntegrator::BackendIntegrator(){
     BackendClientConfig config;
     _backendClient = new BackendClient(config);
-    resetModule();
 }
    
 void BackendIntegrator::updateTimers(){
@@ -16,9 +17,9 @@ unsigned long BackendIntegrator::getServerTime(){
 }
 
 void BackendIntegrator::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
-    _backendClient->SendWeatherData(weatherMonitorData);
-}
+    globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::DataTransfer);  
 
-void BackendIntegrator::resetModule(){
-    _backendClient->resetModule();
+    _backendClient->SendWeatherData(weatherMonitorData);
+
+    globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Idle);    
 }

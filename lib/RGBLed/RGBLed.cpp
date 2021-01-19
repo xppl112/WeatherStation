@@ -13,14 +13,18 @@ RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, bool commonAnode){
 }
 
 void RGBLed::setColor(uint8_t R, uint8_t G, uint8_t B){
+    R = R * PWMRANGE / 255;
+    G = G * PWMRANGE / 255;
+    B = B * PWMRANGE / 255;
+
     if(_commonAnode){
         analogWrite(_pinR, R);
         analogWrite(_pinG, G);
         analogWrite(_pinB, B);
     }
     else {
-        analogWrite(_pinR, 255 - R);
-        analogWrite(_pinG, 255 - G);
-        analogWrite(_pinB, 255 - B);
+        analogWrite(_pinR, PWMRANGE - R);
+        analogWrite(_pinG, PWMRANGE - G);
+        analogWrite(_pinB, PWMRANGE - B);
     }
 }

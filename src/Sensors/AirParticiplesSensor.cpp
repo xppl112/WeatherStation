@@ -12,8 +12,7 @@ void AirParticiplesSensor::beginMeasurement(){
     if(!_sensor->isConnected)
         return;//TODO: return error
 
-    if(!_sensor->isInSleepMode)
-        _sensor->wakeUp();
+    _sensor->wakeUp();
 }
 
 PmsData AirParticiplesSensor::endMeasurement(){

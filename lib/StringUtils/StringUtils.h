@@ -3,5 +3,5 @@
 class StringUtils
 {
 public:
-  static char* floatToString(float number, int widthBeforeDot, int widthAfterDot = 2);
+  static String floatToString(float number, int widthAfterDot = 1, int widthBeforeDot = -1);
 };
