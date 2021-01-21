@@ -12,19 +12,21 @@ const uint8_t RGB_LED_R_PIN = D4;
 const uint8_t RGB_LED_G_PIN = D3;
 const uint8_t RGB_LED_B_PIN = D0;
 
-const uint8_t PLANTOWER_RX_PIN = D9;
-const uint8_t PLANTOWER_TX_PIN = D10;
+//Hardware UART pins used
+//const uint8_t PLANTOWER_RX_PIN = D9;
+//const uint8_t PLANTOWER_TX_PIN = D10;
 
 const uint8_t DHT_DATA_PIN = D5;
 
 const uint8_t LED_POWER = MCP_A0;
+const uint8_t LED_POWER_NIGHT = MCP_B0;
 const uint8_t LED_STATUS = MCP_A1;
 const uint8_t LED_TEMPERATURE = MCP_A2;
 const uint8_t LED_PRESSURE = MCP_A3;
-const uint8_t LED_RESERVED = MCP_A4;
 
+const uint8_t UP_BUTTON_PIN = MCP_A4;
 const uint8_t LEFT_BUTTON_PIN = MCP_A5;
-const uint8_t CENTER_BUTTON_PIN = MCP_A6;
+const uint8_t DOWN_BUTTON_PIN = MCP_A6;
 const uint8_t RIGHT_BUTTON_PIN = MCP_A7;
 
 struct BackendClientConfig {

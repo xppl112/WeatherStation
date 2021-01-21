@@ -1,14 +1,8 @@
 #include "UI/ScreenController.h"
 #include "StringUtils.h"
-#include "Config.h"
 
-ScreenController::ScreenController(){
-    _oled = new OLED(OLED_I2C_ADDR);
-}
-
-void ScreenController::resetScreen(){
-    _oled->connect();
-    clearScreen();
+ScreenController::ScreenController(HardwareModulesRegistry* hardwareModulesRegistry){
+    _oled = hardwareModulesRegistry->oledScreen;
 }
 
 void ScreenController::clearScreen(){

@@ -1,9 +1,9 @@
+#ifndef MCPEXTENDER_H
+#define MCPEXTENDER_H
+
 #include <stdint.h>
 #include <Wire.h>
 #include "Adafruit_MCP23017.h"
-
-#ifndef MCPEXTENDER_H
-#define MCPEXTENDER_H
 
 #define MCP_A0 0
 #define MCP_A1 1
@@ -32,6 +32,7 @@ public:
   uint8_t digitalRead(uint8_t pin);
   void digitalWrite(uint8_t pin, uint8_t value);
 
+  bool isConnected = false;
 private:
   Adafruit_MCP23017* _mcp;
   uint8_t _i2c_address;

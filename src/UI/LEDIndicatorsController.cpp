@@ -1,20 +1,17 @@
 #include <Arduino.h>
 #include "UI/LEDIndicatorsController.h"
-#include "GlobalObjects/GlobalDevices.h"
 #include "GlobalObjects/GlobalSystemState.h"
 #include "Config.h"
-extern GlobalDevices* globalDevices;
 extern GlobalSystemState* globalSystemState;
 
-LEDIndicatorsController::LEDIndicatorsController(){
+LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwareModulesRegistry){
+    _mcp = hardwareModulesRegistry->mcpExtender;
     _pollutionRGBLed = new RGBLed(RGB_LED_R_PIN, RGB_LED_G_PIN, RGB_LED_B_PIN, false);
-    
-    _mcp = globalDevices->mcpExtender;    
+     
     _mcp->pinMode(LED_POWER, OUTPUT);
-    _mcp->pinMode(LED_TEMPERATURE, OUTPUT);
     _mcp->pinMode(LED_STATUS, OUTPUT);
-    _mcp->pinMode(LED_PRESSURE, OUTPUT);
-    _mcp->pinMode(LED_RESERVED, OUTPUT);
+    _mcp->pinMode(LED_TEMPERATURE, OUTPUT);_mcp->digitalWrite(LED_TEMPERATURE, LOW);
+    _mcp->pinMode(LED_PRESSURE, OUTPUT);_mcp->digitalWrite(LED_PRESSURE, LOW);
 
     _pollutionRGBLed->setColor(0, 0, 0);
 

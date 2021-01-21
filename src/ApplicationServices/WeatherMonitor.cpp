@@ -3,18 +3,12 @@
 #include "GlobalObjects/GlobalSystemState.h"
 extern GlobalSystemState* globalSystemState;
 
-WeatherMonitor::WeatherMonitor(){
-    _timer = new Ticker(0);    
-    _airParticiplesSensor = new AirParticiplesSensor(PLANTOWER_RX_PIN, PLANTOWER_TX_PIN);
-    _outdoorMeteoSensor = new OutdoorMeteoSensor(BME_I2C_ADDR);
-    _indoorMeteoSensor = new IndoorMeteoSensor(DHT_DATA_PIN);
+WeatherMonitor::WeatherMonitor(HardwareModulesRegistry* hardwareModulesRegistry){
+    _hardwareModulesRegistry = hardwareModulesRegistry;
+    _timer = new Ticker(0);
 }
 
 void WeatherMonitor::run(){
-    _airParticiplesSensor->connect();
-    _outdoorMeteoSensor->connect();
-    _indoorMeteoSensor->connect();
-
     state = IDLE;
     _timer->start();    
 }
@@ -35,20 +29,20 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 
 void WeatherMonitor::startMeasuring(){
     _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS * 1000);
-    state = MEASURING;
+    state = MEASURING;    
     globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Measuring);    
     _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
     
-    _airParticiplesSensor->beginMeasurement();
+    _hardwareModulesRegistry->airParticiplesSensor->beginMeasurement();
 }
 
 void WeatherMonitor::finishMeasuring(){
     _timer->interval(WEATHER_MONITOR_INTERVAL_SECONDS * 1000);
     WeatherMonitorData data {.isDataReceived = false};
 
-    PmsData airParticiplesData = _airParticiplesSensor->endMeasurement();
-    BME280Data outdoorMeteoData = _outdoorMeteoSensor->getData();
-    DHTData indoorMeteoData = _indoorMeteoSensor->getData();
+    PmsData airParticiplesData = _hardwareModulesRegistry->airParticiplesSensor->endMeasurement();
+    BME280Data outdoorMeteoData = _hardwareModulesRegistry->outdoorMeteoSensor->getData();
+    DHTData indoorMeteoData = _hardwareModulesRegistry->indoorMeteoSensor->getData();
 
     if(airParticiplesData.isDataReceived || outdoorMeteoData.isDataReceived || indoorMeteoData.isDataReceived){
         data.isDataReceived = true;

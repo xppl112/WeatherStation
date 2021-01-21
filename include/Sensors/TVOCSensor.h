@@ -1,8 +1,0 @@
-class TVOCSensor
-{
-public:
-
-private:
-    
-
-};

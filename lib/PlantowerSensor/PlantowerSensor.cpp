@@ -7,20 +7,29 @@
 static const uint32_t PMS_READ_DELAY = 30000;
 static PmsData FAILED_DATA = PmsData { false };
 
-PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin)
+PlantowerSensor::PlantowerSensor()
+{
+    isConnected = false;
+}
+
+PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin) : PlantowerSensor()
 {
     _rxPin = rxPin;
     _txPin = txPin;
     _setPin = setPin;
-    isConnected = false;
 }
 
 bool PlantowerSensor::connect(bool waitUntilConnected)
 {
-    // Create serial bus using Software serial
-    //_serial = new SoftwareSerial(_rxPin, _txPin); 
-    Serial.begin(PMS::BAUD_RATE); 
-    _serial = &Serial;
+    if(_rxPin != 0 || _txPin != 0){
+        // Create serial bus using Software serial
+        _serial = new SoftwareSerial(_rxPin, _txPin); 
+    }
+    else {
+        //Use hardware serial
+        Serial.begin(PMS::BAUD_RATE);
+        _serial = &Serial;
+    }
 
     _pms = new PMS(*_serial);    
 

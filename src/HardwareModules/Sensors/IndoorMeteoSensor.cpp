@@ -1,4 +1,4 @@
-#include "Sensors/IndoorMeteoSensor.h"
+#include "HardwareModules/Sensors/IndoorMeteoSensor.h"
 
 IndoorMeteoSensor::IndoorMeteoSensor(uint8_t dhtSensorDataPin){
     _sensor =  new DHTSensor(dhtSensorDataPin);

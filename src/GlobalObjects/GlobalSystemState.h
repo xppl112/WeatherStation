@@ -34,18 +34,18 @@ public:
     }
 
     void setSystemStatus(SystemStatus status){
-        //if(getErrorsCount() == 0){
+        if(getErrorsCount() == 0){
             systemStatus = status;
-        //}
+        }
     }
 
     void setPowerStatus(PowerStatus status){
-        //if(getErrorsCount() == 0){
+        if(getErrorsCount() == 0){
             powerStatus = status;
-        //}
+        }
     }
 
-    void addError(SystemErrorSeverity severity, SystemErrorCode code, String description){
+    void addError(SystemErrorCode code, SystemErrorSeverity severity = SystemErrorSeverity::SystemError, String description = ""){
         SystemError error {
             .severity = severity,
             .errorCode = code,
@@ -56,6 +56,9 @@ public:
 
     int getErrorsCount(){ return _errors.size(); }
     std::vector<SystemError> getAllErrors() { return _errors; }
+    void removeError(SystemErrorCode code){
+        
+    }
     void clearAllErrors(){ _errors.clear(); }
 
 private:

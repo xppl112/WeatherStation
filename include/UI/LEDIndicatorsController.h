@@ -1,3 +1,4 @@
+#include "HardwareModules/HardwareModulesRegistry.h"
 #include "RGBLed.h"
 #include "MCPExtender.h"
 #include "Models/WeatherMonitorData.h"
@@ -6,7 +7,7 @@
 class LEDIndicatorsController
 {
 public:
-    LEDIndicatorsController();
+    LEDIndicatorsController(HardwareModulesRegistry* hardwareModulesRegistry);
     void setPollutionLevel(WeatherMonitorData weatherData);
     void setWeatherStatusLed(WeatherMonitorData weatherData);
     void updateSystemStatusLed();

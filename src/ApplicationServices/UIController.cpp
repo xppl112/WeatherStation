@@ -1,12 +1,11 @@
 #include "ApplicationServices/UIController.h"
 
+UIController::UIController(HardwareModulesRegistry* hardwareModulesRegistry){
+    _screen = new ScreenController(hardwareModulesRegistry);
+    _menuController = new MenuController(hardwareModulesRegistry);
+    _ledIndicators = new LEDIndicatorsController(hardwareModulesRegistry);
+    _inputsController = new InputsController(hardwareModulesRegistry);
 
-UIController::UIController(){
-    _screen = new ScreenController();
-    _ledIndicators = new LEDIndicatorsController();
-    _inputsController = new InputsController();
-
-    _screen->resetScreen();
     _screen->showSplashScreen();
 }
 
@@ -19,15 +18,33 @@ void UIController::updateUI() {
 void UIController::updateInputs() {
     ButtonPressed buttonPressed = _inputsController->updateInputs();
 
-    switch(buttonPressed){
-        case ButtonPressed::LEFT:
-            flipScreenMode(false);
-            showCurrentWeather();
-            break;
-        case ButtonPressed::RIGHT:
-            flipScreenMode(true);
-            showCurrentWeather();
-            break;
+    if(_isMenuMode){
+        _menuController->buttonPressed(buttonPressed);
+        if(!_menuController->isMenuActive()){
+            disableMenuMode();
+        }
+    }
+    else {
+        switch(buttonPressed){
+            case ButtonPressed::LEFT:
+                flipScreenMode(false);
+                showCurrentWeather();
+                break;
+            case ButtonPressed::RIGHT:
+                flipScreenMode(true);
+                showCurrentWeather();
+                break;
+            case ButtonPressed::UP:
+                enableMenuMode();
+                break;
+            case ButtonPressed::DOWN:
+                enableMenuMode();
+                break;
+            case ButtonPressed::LEFTRIGHT:
+                enableMenuMode(true);
+                break;
+            case ButtonPressed::NONE:break;
+        }
     }
 }
 
@@ -37,13 +54,15 @@ void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 }
 
 void UIController::showCurrentWeather(){
-    switch (_currentScreenMode){
-        case ScreenMode::OFF: _screen->clearScreen();break;
-        case ScreenMode::TEMPERATURE_OUTSIDE: _screen->showOutdoorTemperature(_currentWeather);break;
-        case ScreenMode::AIR_POLLUTION: _screen->showAirPollution(_currentWeather);break;
-        case ScreenMode::METEO_OUTSIDE: _screen->showOutdoorHumidityAndPressure(_currentWeather);break;
-        case ScreenMode::METEO_INSIDE: _screen->showIndoorWeather(_currentWeather);break;
-        case ScreenMode::AIR_QULITY: _screen->showAirQualityMeasurements(_currentWeather);break;
+    if(!_isMenuMode){
+        switch (_currentScreenMode){
+            case ScreenMode::OFF: _screen->clearScreen();break;
+            case ScreenMode::TEMPERATURE_OUTSIDE: _screen->showOutdoorTemperature(_currentWeather);break;
+            case ScreenMode::AIR_POLLUTION: _screen->showAirPollution(_currentWeather);break;
+            case ScreenMode::METEO_OUTSIDE: _screen->showOutdoorHumidityAndPressure(_currentWeather);break;
+            case ScreenMode::METEO_INSIDE: _screen->showIndoorWeather(_currentWeather);break;
+            case ScreenMode::AIR_QULITY: _screen->showAirQualityMeasurements(_currentWeather);break;
+        }
     }
 
     _ledIndicators->setPollutionLevel(_currentWeather);
@@ -59,4 +78,14 @@ void UIController::flipScreenMode(bool forward){
     if(currentModeValue < (int)ScreenMode::TEMPERATURE_OUTSIDE) currentModeValue = (int)ScreenMode::AIR_QULITY;
 
     _currentScreenMode = static_cast<ScreenMode>(currentModeValue);
+}
+
+void UIController::enableMenuMode(bool debugMode){
+    _isMenuMode = true;
+    _menuController->showMenu(!debugMode ? MAIN_MENU_MODE : DEBUG_MENU_MODE);
+}
+
+void UIController::disableMenuMode(){
+    _isMenuMode = false;
+    showCurrentWeather();
 }

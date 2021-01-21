@@ -1,8 +1,11 @@
+#ifndef OLED_H
+#define OLED_H
+
 #include <Arduino.h>
 #include <stdint.h>
 #include <Adafruit_SSD1306.h> 
 
-enum OLEDFont {FONT_TITLE, FONT_BODY_BIG, FONT_MEDIUM, FONT_SMALL};
+enum OLEDFont {FONT_TITLE, FONT_BODY_BIG, FONT_MEDIUM, FONT_SMALL, FONT_SMALL_THIN};
 
 class OLED
 {
@@ -25,3 +28,5 @@ private:
   uint8_t _width;
   uint8_t _height;
 };
+
+#endif

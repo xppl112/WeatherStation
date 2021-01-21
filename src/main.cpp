@@ -3,21 +3,25 @@
 #include "ApplicationServices/UIController.h"
 #include "ApplicationServices/BackendIntegrator.h"
 #include "GlobalObjects/GlobalSystemState.h"
-#include "GlobalObjects/GlobalDevices.h"
+#include "HardwareModules/HardwareModulesRegistry.h"
+#include "Healthchecks/HealthcheckProvider.h"
 
 GlobalSystemState* globalSystemState;
-GlobalDevices* globalDevices;
+HardwareModulesRegistry* hardwareModulesRegistry;
 WeatherMonitor* weatherMonitor;
 UIController* uiController;
 BackendIntegrator* backendIntegrator;
+HealthcheckProvider* healthcheckProvider;
 void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData);
 
 void setup() {
     globalSystemState = new GlobalSystemState();
-    globalDevices = new GlobalDevices();
+    hardwareModulesRegistry = new HardwareModulesRegistry();
+    hardwareModulesRegistry->reconnectAllDevices();    
+    healthcheckProvider = new HealthcheckProvider(hardwareModulesRegistry);
 
-    uiController = new UIController();
-    weatherMonitor = new WeatherMonitor();
+    uiController = new UIController(hardwareModulesRegistry);
+    weatherMonitor = new WeatherMonitor(hardwareModulesRegistry);
     backendIntegrator = new BackendIntegrator();    
 
     weatherMonitor->addUpdatedEventHandler(onWeatherUpdatedEventHandler);
@@ -25,6 +29,7 @@ void setup() {
 }
 
 void loop() {
+    healthcheckProvider->checkSystemHealth();
     uiController->updateUI();
     weatherMonitor->updateTimers();
     backendIntegrator->updateTimers();

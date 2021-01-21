@@ -1,11 +1,11 @@
+#include "HardwareModules/HardwareModulesRegistry.h"
 #include "OLED.h"
 #include "Models/WeatherMonitorData.h"
 
 class ScreenController
 {
 public:
-    ScreenController();
-    void resetScreen();
+    ScreenController(HardwareModulesRegistry* hardwareModulesRegistry);
     void clearScreen();
     void showSplashScreen();
     void showIndoorWeather(WeatherMonitorData weatherData);

@@ -1,13 +1,19 @@
+#ifndef AirParticiplesSensor_H
+#define AirParticiplesSensor_H
+
 #include "PlantowerSensor.h"
 
 class AirParticiplesSensor
 {
 public:
-    AirParticiplesSensor(uint8_t rxPin, uint8_t txPin);
+    AirParticiplesSensor();
     void connect();
     void beginMeasurement();
     PmsData endMeasurement();
 
+    bool isConnected() {return _sensor->isConnected;}
 private:
     PlantowerSensor* _sensor;
 };
+
+#endif

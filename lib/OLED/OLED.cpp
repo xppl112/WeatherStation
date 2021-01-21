@@ -18,6 +18,7 @@ OLED::OLED(uint8_t i2c_address, uint8_t width, uint8_t height)
 bool OLED::connect(bool waitUntilConnected){
     isConnected = _oled->begin(SSD1306_SWITCHCAPVCC, _i2c_address);
     _oled->ssd1306_command(SSD1306_DISPLAYOFF);
+    delay(100);
     _oled->ssd1306_command(SSD1306_DISPLAYON);
     return isConnected;
 }
@@ -54,6 +55,10 @@ void OLED::print(const char str[], OLEDFont font)
     }
     else if(font == FONT_SMALL){
         _oled->setFont(&FreeSerifBold9pt7b);
+        _oled->setTextSize(1);
+    }
+    else if(font == FONT_SMALL_THIN){
+        _oled->setFont(&FreeSerif9pt7b);
         _oled->setTextSize(1);
     }
 

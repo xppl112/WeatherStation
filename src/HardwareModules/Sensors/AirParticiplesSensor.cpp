@@ -1,7 +1,7 @@
-#include "Sensors/AirParticiplesSensor.h"
+#include "HardwareModules/Sensors/AirParticiplesSensor.h"
 
-AirParticiplesSensor::AirParticiplesSensor(uint8_t rxPin, uint8_t txPin){
-    _sensor = new PlantowerSensor(rxPin, txPin);
+AirParticiplesSensor::AirParticiplesSensor(){
+    _sensor = new PlantowerSensor();
 }
 
 void AirParticiplesSensor::connect(){

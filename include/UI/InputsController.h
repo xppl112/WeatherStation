@@ -1,17 +1,24 @@
-#include <BounceMcp.h>
-#include "MCPExtender.h"
+#ifndef INPUTSCONTROLLER_H
+#define INPUTSCONTROLLER_H
 
-enum ButtonPressed {NONE, LEFT, CENTER, RIGHT, LEFTRIGHT};
+#include "HardwareModules/HardwareModulesRegistry.h"
+#include <BounceMcp.h>
+
+enum ButtonPressed {NONE, LEFT, UP, RIGHT, DOWN, LEFTRIGHT};
 
 class InputsController
 {
 public:
-    InputsController();
+    InputsController(HardwareModulesRegistry* hardwareModulesRegistry);
     ButtonPressed updateInputs();
 
 private:
-    MCPExtender* _mcp;
     Button* _leftButton;
-    Button* _centerButton;
-    Button* _rightButton;
+    Button* _rightButton;    
+    Button* _upButton;
+    Button* _downButton;
+
+    Button* registerButton(HardwareModulesRegistry* hardwareModulesRegistry, uint8_t buttonPin);
 };
+
+#endif

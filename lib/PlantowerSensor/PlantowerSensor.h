@@ -12,6 +12,7 @@ struct PmsData {
 class PlantowerSensor
 {
 public:
+    PlantowerSensor();
     PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin = 0);
 
     bool connect(bool waitUntilConnected = false);
@@ -26,9 +27,9 @@ public:
     bool isInSleepMode;
 
 private:
-    uint8_t _rxPin;
-    uint8_t _txPin;
-    uint8_t _setPin;
+    uint8_t _rxPin = 0;
+    uint8_t _txPin = 0;
+    uint8_t _setPin = 0;
     Stream* _serial;
     PMS* _pms;
 };

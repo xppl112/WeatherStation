@@ -9,6 +9,7 @@ MCPExtender::MCPExtender(uint8_t i2c_address)
 
 void MCPExtender::connect(){
     _mcp->begin((uint8_t)(_i2c_address - 0x20));
+    isConnected = true;
 }
 
 /*!

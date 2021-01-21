@@ -1,4 +1,4 @@
-#include "Sensors/OutdoorMeteoSensor.h"
+#include "HardwareModules/Sensors/OutdoorMeteoSensor.h"
 
 OutdoorMeteoSensor::OutdoorMeteoSensor(uint8_t bme_i2c_address){
     _sensor =  new BME280Sensor(bme_i2c_address);
