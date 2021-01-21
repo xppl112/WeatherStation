@@ -1,6 +1,14 @@
 #include "Healthchecks/HealthcheckProvider.h"
 
 
-HealthcheckProvider::HealthcheckProvider(HardwareModulesRegistry* hardwareModulesRegistry);
-void HealthcheckProvider::checkSystemHealth();
-SystemHealthStatus HealthcheckProvider::getSystemHealth();
+HealthcheckProvider::HealthcheckProvider(HardwareModulesRegistry* hardwareModulesRegistry){
+    _hardwareModulesRegistry = hardwareModulesRegistry;
+}
+
+void HealthcheckProvider::checkSystemHealth(){
+
+}
+
+SystemHealthStatus HealthcheckProvider::getSystemHealth(){
+
+}
