@@ -3,7 +3,7 @@
 
 #include <ArduinoJson.h>
 
-enum AQILevel {
+enum class AQILevel {
     Good = 0,
     Moderate = 51,
     UnhealthyForSensitiveGroups = 101,
@@ -12,7 +12,7 @@ enum AQILevel {
     Hazardous = 300
 };
 
-enum PressureLevel {
+enum class PressureLevel {
     Low = 1000,
     Normal = 1013,
     High = 1030
@@ -53,8 +53,8 @@ struct WeatherMonitorData {
     }
 
     PressureLevel getPressureLevel(){
-        if(pressureOutside <= PressureLevel::Low) return PressureLevel::Low;
-        if(pressureOutside >= PressureLevel::High) return PressureLevel::High;
+        if(pressureOutside <= (int)PressureLevel::Low) return PressureLevel::Low;
+        if(pressureOutside >= (int)PressureLevel::High) return PressureLevel::High;
         return PressureLevel::Normal;
     }
 

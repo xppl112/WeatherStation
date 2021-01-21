@@ -1,17 +1,18 @@
 #ifndef AirParticiplesSensor_H
 #define AirParticiplesSensor_H
 
+#include "HardwareModules/IHardwareModule.h"
 #include "PlantowerSensor.h"
 
-class AirParticiplesSensor
+class AirParticiplesSensor : public IHardwareModule
 {
 public:
     AirParticiplesSensor();
-    void connect();
+    void connect() override;
     void beginMeasurement();
     PmsData endMeasurement();
 
-    bool isConnected() {return _sensor->isConnected;}
+    bool isConnected() override { return _sensor->isConnected; }
 private:
     PlantowerSensor* _sensor;
 };

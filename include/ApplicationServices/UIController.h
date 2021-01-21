@@ -15,7 +15,7 @@ public:
     void disableMenuMode();
 
 private:
-    enum ScreenMode {OFF, TEMPERATURE_OUTSIDE, AIR_POLLUTION, METEO_OUTSIDE, METEO_INSIDE, AIR_QULITY};
+    enum class ScreenMode {OFF, TEMPERATURE_OUTSIDE, AIR_POLLUTION, METEO_OUTSIDE, METEO_INSIDE, AIR_QULITY};
     void updateInputs();
     void showCurrentWeather();
     void flipScreenMode(bool forward);
@@ -28,5 +28,5 @@ private:
     WeatherMonitorData _currentWeather;
     bool _isNightMode = false;
     bool _isMenuMode = false;
-    ScreenMode _currentScreenMode = TEMPERATURE_OUTSIDE;
+    ScreenMode _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
 };

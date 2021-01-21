@@ -7,7 +7,7 @@
 #define OFF_MENU_MODE MenuMode::MENU_OFF
 #define DEBUG_MENU_MODE MenuMode::MENU_DEBUG_MODE
 
-enum MenuMode {MENU_OFF, MAIN_MENU, MENU_SETTINGS, MENU_DEVICES_INFO, MENU_DEBUG_MODE};
+enum class MenuMode {MENU_OFF, MAIN_MENU, MENU_SETTINGS, MENU_DEVICES_INFO, MENU_DEBUG_MODE};
 
 struct MenuOption {
     String title;
@@ -30,37 +30,37 @@ private:
     std::map<MenuMode, MenuScreen>& getMenuBindings()
     {
         static std::map<MenuMode, MenuScreen> menuBindings = {
-            {MAIN_MENU, MenuScreen {
+            {MenuMode::MAIN_MENU, MenuScreen {
                 .title = "Main menu",
-                .previousScreen = MENU_OFF,
+                .previousScreen = MenuMode::MENU_OFF,
                 .options = {
                     MenuOption {
                         .title = "Settings",
-                        .nextScreen = MENU_SETTINGS
+                        .nextScreen = MenuMode::MENU_SETTINGS
                     }, 
                     MenuOption {
                         .title = "Devices info",
-                        .nextScreen = MENU_DEVICES_INFO
+                        .nextScreen = MenuMode::MENU_DEVICES_INFO
                     }, 
                 }
             }},
-            {MENU_SETTINGS, MenuScreen {
+            {MenuMode::MENU_SETTINGS, MenuScreen {
                 .title = "Settings",
-                .previousScreen = MAIN_MENU,
+                .previousScreen = MenuMode::MAIN_MENU,
                 .options = {
                     MenuOption {
                         .title = "Option 1",
-                        .nextScreen = MENU_SETTINGS
+                        .nextScreen = MenuMode::MENU_SETTINGS
                     }, 
                     MenuOption {
                         .title = "Option 2",
-                        .nextScreen = MENU_SETTINGS
+                        .nextScreen = MenuMode::MENU_SETTINGS
                     }, 
                 }
             }},
-            {MENU_DEVICES_INFO, MenuScreen {
+            {MenuMode::MENU_DEVICES_INFO, MenuScreen {
                 .title = "Devices info",
-                .previousScreen = MAIN_MENU
+                .previousScreen = MenuMode::MAIN_MENU
             }}
         };
         return menuBindings;

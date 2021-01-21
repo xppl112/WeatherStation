@@ -9,7 +9,7 @@ WeatherMonitor::WeatherMonitor(HardwareModulesRegistry* hardwareModulesRegistry)
 }
 
 void WeatherMonitor::run(){
-    state = IDLE;
+    state = WeatherMonitorState::IDLE;
     _timer->start();    
 }
 
@@ -17,8 +17,8 @@ void WeatherMonitor::updateTimers(){
     _timer->update();
 
     if(_timer->state() == FIRED){
-        if(state == IDLE)startMeasuring();
-        else if(state == MEASURING)finishMeasuring();
+        if(state == WeatherMonitorState::IDLE)startMeasuring();
+        else if(state == WeatherMonitorState::MEASURING)finishMeasuring();
         _timer->resetStatus();
     }
 }
@@ -29,7 +29,7 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 
 void WeatherMonitor::startMeasuring(){
     _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS * 1000);
-    state = MEASURING;    
+    state = WeatherMonitorState::MEASURING;    
     globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Measuring);    
     _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
     
@@ -67,7 +67,7 @@ void WeatherMonitor::finishMeasuring(){
         data.humidityInside = indoorMeteoData.humidityPercent;
     }
 
-    state = IDLE;
+    state = WeatherMonitorState::IDLE;
     globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Idle);    
     if(_onUpdateCallback != NULL) _onUpdateCallback(data);
 }

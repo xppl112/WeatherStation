@@ -13,8 +13,8 @@ public:
     void addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback callback);
     void reconnectSensors();
     void resetSensors();
-    enum WeatherMonitorState {DISABLED, IDLE, MEASURING};
-    WeatherMonitorState state = DISABLED;
+    enum class WeatherMonitorState {DISABLED, IDLE, MEASURING};
+    WeatherMonitorState state = WeatherMonitorState::DISABLED;
 
 private:
     void startMeasuring();

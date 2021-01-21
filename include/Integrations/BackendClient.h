@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Models/WeatherMonitorData.h"
 
-enum BackendResponseStatus {SUCCESS, SYSTEM_ERROR, WIFI_CANT_CONNECT, BACKEND_ERROR, BACKEND_TIMEOUT};
+enum class BackendResponseStatus {SUCCESS, SYSTEM_ERROR, WIFI_CANT_CONNECT, BACKEND_ERROR, BACKEND_TIMEOUT};
 
 class BackendClient
 {

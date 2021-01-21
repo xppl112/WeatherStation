@@ -1,9 +1,9 @@
 #ifndef SYSTEM_ERROR_CODES_H
 #define SYSTEM_ERROR_CODES_H
 
-enum SystemErrorSeverity { SystemError, SystemWarning};
+enum class SystemErrorSeverity { SystemError, SystemWarning};
 
-enum SystemErrorCode {
+enum class SystemErrorCode {
     Unknown = 0, 
     OLED_I2CConnectionFailure = 10, 
     MCPExtender_I2CConnectionFailure = 11,

@@ -4,7 +4,7 @@
 #include "HardwareModules/HardwareModulesRegistry.h"
 #include "Healthchecks/HardwareDevicesHealthcheck.h"
 
-enum SystemHealthStatus {HEALTH_OK, HEALTH_WARNING, HEALTH_ERROR};
+enum class SystemHealthStatus {HEALTH_OK, HEALTH_WARNING, HEALTH_ERROR};
 
 class HealthcheckProvider
 {

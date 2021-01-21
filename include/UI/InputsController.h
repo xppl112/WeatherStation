@@ -4,7 +4,7 @@
 #include "HardwareModules/HardwareModulesRegistry.h"
 #include <BounceMcp.h>
 
-enum ButtonPressed {NONE, LEFT, UP, RIGHT, DOWN, LEFTRIGHT};
+enum class ButtonPressed {NONE, LEFT, UP, RIGHT, DOWN, LEFTRIGHT};
 
 class InputsController
 {

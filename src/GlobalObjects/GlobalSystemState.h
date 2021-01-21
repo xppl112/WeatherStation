@@ -10,8 +10,8 @@ public:
         _errors.reserve(10);
     }
 
-    enum PowerStatus {Regular, Reserve, Warning};
-    enum SystemStatus {Idle, Measuring, DataTransfer, SystemWarning, FatalFailure};
+    enum class PowerStatus {Regular, Reserve, Warning};
+    enum class SystemStatus {Idle, Measuring, DataTransfer, SystemWarning, FatalFailure};
 
     struct SystemError {
         SystemErrorSeverity severity;
@@ -19,8 +19,8 @@ public:
         String description;
     };
 
-    volatile PowerStatus powerStatus = Regular;
-    volatile SystemStatus systemStatus = Idle;
+    volatile PowerStatus powerStatus = PowerStatus::Regular;
+    volatile SystemStatus systemStatus = SystemStatus::Idle;
 
     unsigned long getCurrentTimestamp(){
         if(_timeStampSnapshot == 0) return 0;
