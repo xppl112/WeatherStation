@@ -41,23 +41,23 @@ void OLED::print(const char str[], OLEDFont font)
 {   
     _oled->setTextColor(SSD1306_WHITE);
 
-    if(font == FONT_TITLE){
+    if(font == OLEDFont::FONT_TITLE){
         _oled->setFont(&FreeSerif9pt7b);
         _oled->setTextSize(1);
     }
-    else if(font == FONT_BODY_BIG){
+    else if(font == OLEDFont::FONT_BODY_BIG){
         _oled->setFont(&FreeSerifBold24pt7b);
         _oled->setTextSize(1);
     }
-    else if(font == FONT_MEDIUM){
+    else if(font == OLEDFont::FONT_MEDIUM){
         _oled->setFont(&FreeSerifBold18pt7b);
         _oled->setTextSize(1);
     }
-    else if(font == FONT_SMALL){
+    else if(font == OLEDFont::FONT_SMALL){
         _oled->setFont(&FreeSerifBold9pt7b);
         _oled->setTextSize(1);
     }
-    else if(font == FONT_SMALL_THIN){
+    else if(font == OLEDFont::FONT_SMALL_THIN){
         _oled->setFont(&FreeSerif9pt7b);
         _oled->setTextSize(1);
     }

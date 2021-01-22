@@ -17,8 +17,8 @@ HardwareModulesRegistry::HardwareModulesRegistry(){
 }
 
 void HardwareModulesRegistry::reconnectAllDevices(){    
-    if(!mcpExtender->isConnected())mcpExtender->connect();
-    if(!oledScreen->isConnected())oledScreen->connect();
+    if(!mcpExtender->isConnected) mcpExtender->connect();
+    if(!oledScreen->isConnected) oledScreen->connect();
 
     for (auto module : _hardwareModules) {
         if(!module.second->isConnected())module.second->connect();

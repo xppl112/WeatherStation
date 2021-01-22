@@ -8,7 +8,12 @@
 #include "HardwareModules/Sensors/IndoorMeteoSensor.h"
 #include "HardwareModules/Sensors/OutdoorMeteoSensor.h"
 
-enum class HardwareDeviceId {DEVICE_MCP_EXTENDER, DEVICE_OLED, DEVICE_PLANTOWER, DEVICE_DHT11, DEVICE_BME280};
+enum class HardwareDeviceId {
+    DEVICE_MCP_EXTENDER, 
+    DEVICE_OLED, 
+    DEVICE_AIR_PARTICIPLES_SENSOR, 
+    DEVICE_INDOOR_METEO_SENSOR, 
+    DEVICE_OUTDOOR_METEO_SENSOR};
 
 class HardwareModulesRegistry
 {
@@ -22,8 +27,9 @@ public:
     AirParticiplesSensor* airParticiplesSensor;
     IndoorMeteoSensor* indoorMeteoSensor;
     OutdoorMeteoSensor* outdoorMeteoSensor;
+    
 private:    
-    std::map<HardwareDeviceId, IHardwareModule> _hardwareModules;
+    std::map<HardwareDeviceId, IHardwareModule*> _hardwareModules;
 };
 
 #endif

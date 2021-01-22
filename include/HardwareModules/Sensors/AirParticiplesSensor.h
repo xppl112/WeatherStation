@@ -9,10 +9,12 @@ class AirParticiplesSensor : public IHardwareModule
 public:
     AirParticiplesSensor();
     void connect() override;
+    void reset() override;
+    bool isConnected() override { return _sensor->isConnected; }
+    
     void beginMeasurement();
     PmsData endMeasurement();
 
-    bool isConnected() override { return _sensor->isConnected; }
 private:
     PlantowerSensor* _sensor;
 };

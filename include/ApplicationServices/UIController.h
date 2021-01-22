@@ -4,11 +4,12 @@
 #include "UI/ScreenController.h"
 #include "UI/InputsController.h"
 #include "Models/WeatherMonitorData.h"
+#include "Healthchecks/HealthcheckProvider.h"
 
 class UIController
 {
 public:
-    UIController(HardwareModulesRegistry* hardwareModulesRegistry);
+    UIController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider);
     void updateUI();
     void onWeatherUpdated(WeatherMonitorData weatherMonitorData);
     void enableMenuMode(bool debugMode = false);
