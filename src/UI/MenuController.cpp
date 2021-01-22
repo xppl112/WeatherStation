@@ -1,7 +1,8 @@
 #include "UI/MenuController.h"
 
-MenuController::MenuController(HardwareModulesRegistry* hardwareModulesRegistry){
+MenuController::MenuController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider){
     _screen = hardwareModulesRegistry->oledScreen;
+    _healthCheckProvider = healthCheckProvider;
 }
 
 void MenuController::showMenu(MenuMode menuMode){
@@ -21,6 +22,9 @@ void MenuController::updateMenu(){
             break;
         case MenuMode::MENU_DEBUG_MODE:
             break;
+        case MenuMode::MENU_OFF:
+            _screen->clear();
+            break;  
     }
 }
 
@@ -59,14 +63,14 @@ void MenuController::printMenu(){
     _screen->clear();
 
     _screen->setCursor(0,12);
-    _screen->print(menuScreen.title, FONT_TITLE);
+    _screen->print(menuScreen.title, OLEDFont::FONT_TITLE);
 
-    for(int i=0; i<menuScreen.options.size();i++){
+    for(int i=0; i< (int)menuScreen.options.size();i++){
         if(selectedOption == i){
-            _screen->setCursor(2, 30 + i*16);_screen->print("||" + menuScreen.options.at(i).title, FONT_SMALL);   
+            _screen->setCursor(2, 30 + i*16);_screen->print("||" + menuScreen.options.at(i).title, OLEDFont::FONT_SMALL);   
         }         
         else {
-            _screen->setCursor(10, 30 + i*16);_screen->print(menuScreen.options.at(i).title, FONT_SMALL_THIN);
+            _screen->setCursor(10, 30 + i*16);_screen->print(menuScreen.options.at(i).title, OLEDFont::FONT_SMALL_THIN);
         }
     }
 

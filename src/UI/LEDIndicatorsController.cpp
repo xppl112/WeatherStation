@@ -23,12 +23,12 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwa
 
 void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
     int aqi = weatherData.calculateAQI();
-    if(aqi >= AQILevel::Good && aqi < AQILevel::Moderate) _pollutionRGBLed->setColor(0, 255, 0);
-    else if(aqi >= AQILevel::Moderate && aqi < AQILevel::UnhealthyForSensitiveGroups) _pollutionRGBLed->setColor(255, 255, 0);
-    else if(aqi >= AQILevel::UnhealthyForSensitiveGroups && aqi < AQILevel::Unhealthy) _pollutionRGBLed->setColor(255, 127, 0);
-    else if(aqi >= AQILevel::Unhealthy && aqi < AQILevel::VeryUnhealthy) _pollutionRGBLed->setColor(255, 0, 0);
-    else if(aqi >= AQILevel::VeryUnhealthy && aqi < AQILevel::Hazardous) _pollutionRGBLed->setColor(144, 61, 152);
-    else if(aqi >= AQILevel::Hazardous) _pollutionRGBLed->setColor(127, 0, 30);
+    if(aqi >= (int)AQILevel::Good && aqi < (int)AQILevel::Moderate) _pollutionRGBLed->setColor(0, 255, 0);
+    else if(aqi >= (int)AQILevel::Moderate && aqi < (int)AQILevel::UnhealthyForSensitiveGroups) _pollutionRGBLed->setColor(255, 255, 0);
+    else if(aqi >= (int)AQILevel::UnhealthyForSensitiveGroups && aqi < (int)AQILevel::Unhealthy) _pollutionRGBLed->setColor(255, 127, 0);
+    else if(aqi >= (int)AQILevel::Unhealthy && aqi < (int)AQILevel::VeryUnhealthy) _pollutionRGBLed->setColor(255, 0, 0);
+    else if(aqi >= (int)AQILevel::VeryUnhealthy && aqi < (int)AQILevel::Hazardous) _pollutionRGBLed->setColor(144, 61, 152);
+    else if(aqi >= (int)AQILevel::Hazardous) _pollutionRGBLed->setColor(127, 0, 30);
 }
 
 void LEDIndicatorsController::setWeatherStatusLed(WeatherMonitorData weatherData){    

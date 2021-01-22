@@ -8,12 +8,19 @@ HardwareModulesRegistry::HardwareModulesRegistry(){
     airParticiplesSensor = new AirParticiplesSensor();
     outdoorMeteoSensor = new OutdoorMeteoSensor(BME_I2C_ADDR);
     indoorMeteoSensor = new IndoorMeteoSensor(DHT_DATA_PIN);
+
+    /*_hardwareModules[HardwareDeviceId::DEVICE_MCP_EXTENDER] = mcpExtender;
+    _hardwareModules[HardwareDeviceId::DEVICE_OLED] = oledScreen;*/
+    _hardwareModules[HardwareDeviceId::DEVICE_AIR_PARTICIPLES_SENSOR] = airParticiplesSensor;
+    _hardwareModules[HardwareDeviceId::DEVICE_OUTDOOR_METEO_SENSOR] = outdoorMeteoSensor;
+    _hardwareModules[HardwareDeviceId::DEVICE_INDOOR_METEO_SENSOR] = indoorMeteoSensor;
 }
 
 void HardwareModulesRegistry::reconnectAllDevices(){    
-    if(!mcpExtender->isConnected)mcpExtender->connect();
-    if(!oledScreen->isConnected)oledScreen->connect();
-    if(!airParticiplesSensor->isConnected())airParticiplesSensor->connect();
-    if(!outdoorMeteoSensor->isConnected())outdoorMeteoSensor->connect();
-    if(!indoorMeteoSensor->isConnected())indoorMeteoSensor->connect();
+    if(!mcpExtender->isConnected())mcpExtender->connect();
+    if(!oledScreen->isConnected())oledScreen->connect();
+
+    for (auto module : _hardwareModules) {
+        if(!module.second->isConnected())module.second->connect();
+    }
 }

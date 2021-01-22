@@ -8,6 +8,10 @@ void OutdoorMeteoSensor::connect(){
     _sensor->connect();
 }
 
+void OutdoorMeteoSensor::reset(){
+
+}
+
 BME280Data OutdoorMeteoSensor::getData(){
     BME280Data data {.isDataReceived = false};
 

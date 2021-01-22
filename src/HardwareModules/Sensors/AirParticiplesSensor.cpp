@@ -8,6 +8,10 @@ void AirParticiplesSensor::connect(){
     _sensor->connect();
 }
 
+void AirParticiplesSensor::reset(){
+
+}
+
 void AirParticiplesSensor::beginMeasurement(){
     if(!_sensor->isConnected)
         return;//TODO: return error

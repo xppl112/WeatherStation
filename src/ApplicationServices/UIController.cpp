@@ -1,8 +1,8 @@
 #include "ApplicationServices/UIController.h"
 
-UIController::UIController(HardwareModulesRegistry* hardwareModulesRegistry){
+UIController::UIController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider){
     _screen = new ScreenController(hardwareModulesRegistry);
-    _menuController = new MenuController(hardwareModulesRegistry);
+    _menuController = new MenuController(hardwareModulesRegistry, healthCheckProvider);
     _ledIndicators = new LEDIndicatorsController(hardwareModulesRegistry);
     _inputsController = new InputsController(hardwareModulesRegistry);
 

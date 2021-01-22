@@ -20,7 +20,7 @@ void setup() {
     hardwareModulesRegistry->reconnectAllDevices();    
     healthcheckProvider = new HealthcheckProvider(hardwareModulesRegistry);
 
-    uiController = new UIController(hardwareModulesRegistry);
+    uiController = new UIController(hardwareModulesRegistry, healthcheckProvider);
     weatherMonitor = new WeatherMonitor(hardwareModulesRegistry);
     backendIntegrator = new BackendIntegrator();    
 

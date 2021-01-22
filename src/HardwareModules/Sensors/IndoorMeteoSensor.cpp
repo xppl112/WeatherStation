@@ -8,6 +8,10 @@ void IndoorMeteoSensor::connect(){
     _sensor->connect();
 }
 
+void IndoorMeteoSensor::reset(){
+
+}
+
 DHTData IndoorMeteoSensor::getData(){
     DHTData data {.isDataReceived = false};
 
