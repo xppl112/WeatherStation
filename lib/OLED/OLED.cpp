@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Adafruit_SSD1306.h> 
+#include <Fonts/Picopixel.h>
 #include <Fonts/FreeSerif9pt7b.h>
 #include <Fonts/FreeSerifBold24pt7b.h>
 #include <Fonts/FreeSerifBold9pt7b.h>
@@ -37,7 +38,7 @@ void OLED::setCursor(uint8_t x, uint8_t y){
     _oled->setCursor(x, y);
 }
 
-void OLED::print(const char str[], OLEDFont font)
+size_t OLED::print(const char str[], OLEDFont font)
 {   
     _oled->setTextColor(SSD1306_WHITE);
 
@@ -61,13 +62,20 @@ void OLED::print(const char str[], OLEDFont font)
         _oled->setFont(&FreeSerif9pt7b);
         _oled->setTextSize(1);
     }
+    else if(font == OLEDFont::FONT_SMALLEST){
+        _oled->setFont(&Picopixel);
+        _oled->setTextSize(1);
+    }
 
+    int16_t t; uint16_t width, height;
+    _oled->getTextBounds(str, _oled->getCursorX(), _oled->getCursorY(), &t, &t, &width, &height);
     _oled->print(str);
+    return height;
 }
 
-void OLED::print(String str, OLEDFont font)
+size_t OLED::print(String str, OLEDFont font)
 {
-    print(str.c_str(), font);
+    return print(str.c_str(), font);
 }
 
 void OLED::render()

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <Adafruit_SSD1306.h> 
 
-enum class OLEDFont {FONT_TITLE, FONT_BODY_BIG, FONT_MEDIUM, FONT_SMALL, FONT_SMALL_THIN};
+enum class OLEDFont {FONT_TITLE, FONT_BODY_BIG, FONT_MEDIUM, FONT_SMALL, FONT_SMALL_THIN, FONT_SMALLEST};
 
 class OLED
 {
@@ -16,8 +16,8 @@ public:
   void clear();
   void setWordWrapMode(bool wrap);
   void setCursor(uint8_t x, uint8_t y);
-  void print(const char str[], OLEDFont font = OLEDFont::FONT_SMALL);
-  void print(String str, OLEDFont font = OLEDFont::FONT_SMALL);
+  size_t print(const char str[], OLEDFont font = OLEDFont::FONT_SMALL);
+  size_t print(String str, OLEDFont font = OLEDFont::FONT_SMALL);
   void render();
 
   bool isConnected;

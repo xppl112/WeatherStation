@@ -13,7 +13,7 @@ class DHTSensor
 public:
   DHTSensor(uint8_t dataPin);
 
-  bool connect(bool waitUntilConnected = false);
+  bool connect(bool connectionProbe = true);
   DHTData readData();
 
   bool isConnected;

@@ -1,31 +1,49 @@
 #ifndef GLOBALSYSTEMSTATE_H
 #define GLOBALSYSTEMSTATE_H
 
+#include <unordered_set>
 #include <Arduino.h>
 #include "Models/SystemErrorCodes.h"
+#include "Healthchecks/IHealthcheck.h"
+
+enum class PowerStatus {Unknown, Regular, Reserve};
+enum class SystemStatus {Unknown, Idle, Measuring, DataTransfer};
+
+struct SystemError {
+    SystemErrorSeverity severity;
+    SystemErrorCode errorCode;
+    String description;
+
+    bool operator==(const SystemError &other) const
+    { 
+        return (errorCode == other.errorCode); 
+    }
+};
+
+struct SystemErrorHasher
+{
+   size_t operator () (const SystemError& x) const
+   {
+      return (unsigned int)x.errorCode;
+   }
+};
+
 
 class GlobalSystemState {    
 public:
     GlobalSystemState(){
-        _errors.reserve(10);
     }
-
-    enum class PowerStatus {Regular, Reserve, Warning};
-    enum class SystemStatus {Idle, Measuring, DataTransfer, SystemWarning, FatalFailure};
-
-    struct SystemError {
-        SystemErrorSeverity severity;
-        SystemErrorCode errorCode;
-        String description;
-    };
 
     volatile PowerStatus powerStatus = PowerStatus::Regular;
     volatile SystemStatus systemStatus = SystemStatus::Idle;
+    volatile HealthStatus systemHealth = HealthStatus::HEALTH_OK;
+    
+    volatile bool isNightMode = false;
 
     unsigned long getCurrentTimestamp(){
         if(_timeStampSnapshot == 0) return 0;
         unsigned long millisDiff = millis() - _millisSnaphot;
-        return _timeStampSnapshot + millisDiff;
+        return _timeStampSnapshot + (millisDiff / 1000);
     }
 
     void updateTime(unsigned long currentTimestamp){
@@ -50,14 +68,25 @@ public:
             .severity = severity,
             .errorCode = code,
             .description = description
-        };
-        _errors.push_back(error);
+        };        
+        _errors.insert(error);
     }
 
     int getErrorsCount(){ return _errors.size(); }
-    std::vector<SystemError> getAllErrors() { return _errors; }
+    std::vector<SystemError> getAllErrors() { 
+        std::vector<SystemError> errorsList;
+        for(auto error : _errors){
+            errorsList.push_back(error);
+        }
+        return errorsList; 
+    }
     void removeError(SystemErrorCode code){
-        
+        for(auto error : _errors){
+            if(error.errorCode == code){
+                _errors.erase(error);
+                break;
+            }
+        }        
     }
     void clearAllErrors(){ _errors.clear(); }
 
@@ -65,6 +94,6 @@ private:
     unsigned long _timeStampSnapshot = 0;
     unsigned long _millisSnaphot;
 
-    std::vector<SystemError> _errors;
+    std::unordered_set<SystemError, SystemErrorHasher> _errors;
 };
 #endif

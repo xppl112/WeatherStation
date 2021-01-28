@@ -1,4 +1,5 @@
 #include "HardwareModules/Sensors/AirParticiplesSensor.h"
+#include "Arduino.h"
 
 AirParticiplesSensor::AirParticiplesSensor(){
     _sensor = new PlantowerSensor();
@@ -14,7 +15,7 @@ void AirParticiplesSensor::reset(){
 
 void AirParticiplesSensor::beginMeasurement(){
     if(!_sensor->isConnected)
-        return;//TODO: return error
+        return;
 
     _sensor->wakeUp();
 }
@@ -22,6 +23,13 @@ void AirParticiplesSensor::beginMeasurement(){
 PmsData AirParticiplesSensor::endMeasurement(){
     PmsData data = _sensor->readData();
     _sensor->sleep();
+
+    // if we don't receive data for times, mark sensor as unconnected
+     if(!data.isDataReceived){
+         _failedMeasurementsCount++;
+         if(_failedMeasurementsCount == FAILED_MEASUREMENTS_TRESHOLD) _sensor->isConnected = false;
+     }
+     else _failedMeasurementsCount = 0;
 
     return data;
 }

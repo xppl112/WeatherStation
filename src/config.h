@@ -37,9 +37,20 @@ struct BackendClientConfig {
     const char* ServerApiGetTimeUrl = "/api/time";
     const char* ServerApiPostWeatherDataUrl = "/api/weather";
     const char* ServerApiPostHealthStatusUrl = "/api/status";
+
+    int BatchRequestsMaxSize = 5;
 };
+
+const uint8_t DATA_COLLECTION_CAPACITY = 100;
 
 const uint8_t WEATHER_MONITOR_INTERVAL_SECONDS = 5;
 const uint8_t WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 10; //60 - standard
+
+const uint8_t HEALTHCHECK_MONITOR_INTERVAL_SECONDS = 60;
+const uint8_t SYSTEM_STATUS_REPORT_INTERVAL_SECONDS = 60;
+const uint8_t TIME_UPDATE_INTERVAL_SECONDS = 60;
+
+// night-mode
+const uint8_t WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS = 30;
 
 #endif

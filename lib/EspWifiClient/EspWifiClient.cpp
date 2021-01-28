@@ -33,10 +33,19 @@ HttpResponse EspWifiClient::sendGetRequest(String host, String resource, uint8_t
     client.setTimeout(timeoutSeconds * 1000);
 
     int resultCode = client.GET();
+
     if(resultCode != -1){
         httpResponse.statusCode = resultCode;
-        httpResponse.payload = client.getString();
+        
+        if(resultCode == HTTP_CODE_OK){
+            httpResponse.payload = client.getString();
+        }
+        else {
+            httpResponse.payload = client.errorToString(resultCode).c_str();
+        }        
     }
+
+    client.end();
 
     httpResponse.success = resultCode != -1 ? true : false;
     return httpResponse;
@@ -53,8 +62,16 @@ HttpResponse EspWifiClient::sendPostJsonRequest(String host, String resource, St
     int resultCode = client.POST(jsonPayload);
     if(resultCode != -1){
         httpResponse.statusCode = resultCode;
-        httpResponse.payload = client.getString();
+        
+        if(resultCode == HTTP_CODE_OK){
+            httpResponse.payload = client.getString();
+        }
+        else {
+            httpResponse.payload = client.errorToString(resultCode).c_str();
+        }        
     }
+
+    client.end();
 
     httpResponse.success = resultCode != -1 ? true : false;
     return httpResponse;

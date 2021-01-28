@@ -15,7 +15,7 @@ void ScreenController::showSplashScreen(){
     _oled->clear();
     _oled->setCursor(30,9);_oled->print("Weather", OLEDFont::FONT_SMALL);
     _oled->setCursor(35,25);_oled->print("station", OLEDFont::FONT_SMALL);
-    _oled->setCursor(10,50);_oled->print("measuring...", OLEDFont::FONT_SMALL);
+    _oled->setCursor(45,50);_oled->print("LOADING...", OLEDFont::FONT_SMALLEST);
     _oled->render();
 }
 

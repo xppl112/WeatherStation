@@ -15,7 +15,7 @@ class BME280Sensor
 public:
   BME280Sensor(uint8_t i2c_address);
 
-  bool connect(bool waitUntilConnected = false);
+  bool connect(bool connectionProbe = true, bool waitUntilConnected = false);
   BME280Data readData();
 
   bool isConnected;

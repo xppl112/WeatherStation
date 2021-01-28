@@ -7,7 +7,7 @@
 #define OFF_MENU_MODE MenuMode::MENU_OFF
 #define DEBUG_MENU_MODE MenuMode::MENU_DEBUG_MODE
 
-enum class MenuMode {MENU_OFF, MAIN_MENU, MENU_SETTINGS, MENU_DEVICES_INFO, MENU_DEBUG_MODE};
+enum class MenuMode {MENU_OFF, MAIN_MENU, MENU_SETTINGS, MENU_DEVICES_INFO, MENU_SYSTEM_STATUS, MENU_CURRENT_STATE, MENU_ERRORS_LOG, MENU_DEBUG_MODE};
 
 struct MenuOption {
     String title;
@@ -42,6 +42,10 @@ private:
                         .title = "Devices info",
                         .nextScreen = MenuMode::MENU_DEVICES_INFO
                     }, 
+                    MenuOption {
+                        .title = "System status",
+                        .nextScreen = MenuMode::MENU_SYSTEM_STATUS
+                    }, 
                 }
             }},
             {MenuMode::MENU_SETTINGS, MenuScreen {
@@ -49,18 +53,36 @@ private:
                 .previousScreen = MenuMode::MAIN_MENU,
                 .options = {
                     MenuOption {
-                        .title = "Option 1",
+                        .title = "Not implemented",
                         .nextScreen = MenuMode::MENU_SETTINGS
-                    }, 
+                    }
+                }
+            }},
+            {MenuMode::MENU_SYSTEM_STATUS, MenuScreen {
+                .title = "System status",
+                .previousScreen = MenuMode::MAIN_MENU,
+                .options = {
                     MenuOption {
-                        .title = "Option 2",
-                        .nextScreen = MenuMode::MENU_SETTINGS
-                    }, 
+                        .title = "Current state",
+                        .nextScreen = MenuMode::MENU_CURRENT_STATE
+                    },
+                    MenuOption {
+                        .title = "Errors Log",
+                        .nextScreen = MenuMode::MENU_ERRORS_LOG
+                    }
                 }
             }},
             {MenuMode::MENU_DEVICES_INFO, MenuScreen {
                 .title = "Devices info",
                 .previousScreen = MenuMode::MAIN_MENU
+            }},
+            {MenuMode::MENU_CURRENT_STATE, MenuScreen {
+                .title = "Current state",
+                .previousScreen = MenuMode::MENU_SYSTEM_STATUS
+            }},
+            {MenuMode::MENU_ERRORS_LOG, MenuScreen {
+                .title = "Errors Log",
+                .previousScreen = MenuMode::MENU_SYSTEM_STATUS
             }}
         };
         return menuBindings;

@@ -35,11 +35,11 @@ Ticker::Ticker(uint32_t timer, fptr callback, resolution_t resolution) {
 
 Ticker::~Ticker() {}
 
-void Ticker::start() {
+void Ticker::start(bool fireImediatelly) {
 	if (resolution == MILLIS) lastTime = millis();
 	else lastTime = micros();
 	enabled = true;
-	status = RUNNING;
+	status = fireImediatelly ? FIRED : RUNNING;
 	}
 
 void Ticker::resume() {

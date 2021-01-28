@@ -16,8 +16,16 @@ BME280Data OutdoorMeteoSensor::getData(){
     BME280Data data {.isDataReceived = false};
 
     if(!_sensor->isConnected)
-        return data;//TODO: set healthcheck
+        return data;
 
      data = _sensor->readData();
+
+    // if we don't receive data for times, mark sensor as unconnected
+     if(!data.isDataReceived){
+         _failedMeasurementsCount++;
+         if(_failedMeasurementsCount == FAILED_MEASUREMENTS_TRESHOLD) _sensor->isConnected = false;
+     }
+     else _failedMeasurementsCount = 0;
+
      return data;
 }

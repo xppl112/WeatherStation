@@ -68,7 +68,7 @@ public:
 	/** start the ticker
 	 *
 	 */
-	void start();
+	void start(bool fireImediatelly = false);
 
 	/** resume the ticker. If not started, it will start it.
 	 *

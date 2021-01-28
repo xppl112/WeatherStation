@@ -1,8 +1,15 @@
 #include "UI/MenuController.h"
+#include "GlobalObjects/GlobalSystemState.h"
+extern GlobalSystemState* globalSystemState;
 
-MenuController::MenuController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider){
+#define TITLE_Y_POSITION 12
+#define BODY_Y_POSITION 28
+#define BODY_LINE_HEIGHT 16
+
+MenuController::MenuController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckController* healthcheckController){
     _screen = hardwareModulesRegistry->oledScreen;
-    _healthCheckProvider = healthCheckProvider;
+    _hardwareModulesRegistry = hardwareModulesRegistry;
+    _healthcheckController = healthcheckController;
 }
 
 void MenuController::showMenu(MenuMode menuMode){
@@ -13,18 +20,21 @@ void MenuController::showMenu(MenuMode menuMode){
 
 void MenuController::updateMenu(){
     switch(_menuMode){
-        case MenuMode::MAIN_MENU:
-        case MenuMode::MENU_SETTINGS:
-            printMenu();
-            break;
         case MenuMode::MENU_DEVICES_INFO:
             showDevicesInfo();
+            break;
+        case MenuMode::MENU_CURRENT_STATE:
+            showCurrentState();
+            break;
+        case MenuMode::MENU_ERRORS_LOG:
+            showErrorsLog();
             break;
         case MenuMode::MENU_DEBUG_MODE:
             break;
         case MenuMode::MENU_OFF:
             _screen->clear();
             break;  
+        default: printMenu();
     }
 }
 
@@ -47,14 +57,6 @@ void MenuController::buttonPressed(ButtonPressed button){
     }
 }
 
-void MenuController::showDevicesInfo(){
-    printMenu();
-}
-
-void MenuController::showDebugScreen(){
-    printMenu();
-}
-
 void MenuController::printMenu(){
     MenuScreen menuScreen = getCurrentScreen();
     int selectedOption = _menuOptionSelectedIndex;
@@ -62,19 +64,100 @@ void MenuController::printMenu(){
     _screen->setWordWrapMode(false);
     _screen->clear();
 
-    _screen->setCursor(0,12);
+    _screen->setCursor(0, TITLE_Y_POSITION);
     _screen->print(menuScreen.title, OLEDFont::FONT_TITLE);
 
     for(int i=0; i< (int)menuScreen.options.size();i++){
         if(selectedOption == i){
-            _screen->setCursor(2, 30 + i*16);_screen->print("||" + menuScreen.options.at(i).title, OLEDFont::FONT_SMALL);   
+            _screen->setCursor(2, BODY_Y_POSITION + i*BODY_LINE_HEIGHT);
+            _screen->print("||" + menuScreen.options.at(i).title, OLEDFont::FONT_SMALL);   
         }         
         else {
-            _screen->setCursor(10, 30 + i*16);_screen->print(menuScreen.options.at(i).title, OLEDFont::FONT_SMALL_THIN);
+            _screen->setCursor(10, BODY_Y_POSITION + i*BODY_LINE_HEIGHT);
+            _screen->print(menuScreen.options.at(i).title, OLEDFont::FONT_SMALL_THIN);
         }
     }
 
     _screen->render();
+}
+
+void MenuController::showDevicesInfo(){
+    auto devicesStatus = _healthcheckController->hardwareDevicesHealthcheck->getDevicesStatus();
+    printMenu();
+
+    int lineNumber = -1;
+    for (auto module : devicesStatus) {
+        lineNumber++;
+        if(lineNumber < _scrollerPosition) continue;
+
+        auto device = _hardwareModulesRegistry->getDevice(module.first);
+        if(device == NULL)continue;
+
+        _screen->setCursor(0, BODY_Y_POSITION + lineNumber * BODY_LINE_HEIGHT);
+
+        String status;
+        switch(module.second){
+            case HardwareDeviceStatus::NO_REGISTERED: status = " "; break;
+            case HardwareDeviceStatus::CONNECTED: status = "+"; break;
+            case HardwareDeviceStatus::DISCONNECTED: status = "-"; break;
+            case HardwareDeviceStatus::FAILURE: status = "!"; break;
+        }
+
+        _screen->print(status + " " + device->getInfo().Name, OLEDFont::FONT_SMALL_THIN);        
+    }
+    _screen->render();
+}
+
+void MenuController::showCurrentState(){
+    printMenu();
+    _screen->setWordWrapMode(true);
+
+    int lineNumber = -1;
+    _screen->setCursor(0, BODY_Y_POSITION);
+
+    std::vector<String> currentStateVariables;
+    currentStateVariables.push_back("Datetime: ");
+    currentStateVariables.push_back("NightMode: " + globalSystemState->isNightMode? "ON" : "OFF");
+
+    for(auto variable : currentStateVariables){
+        lineNumber++;
+        if(lineNumber < _scrollerPosition) continue; 
+
+        size_t lineHeight = _screen->print(variable, OLEDFont::FONT_SMALLEST);
+        _screen->setCursor(0, BODY_Y_POSITION + lineHeight + 5);
+    }
+
+    _screen->render();
+}
+
+void MenuController::showErrorsLog(){
+    printMenu();
+    _screen->setWordWrapMode(true);
+
+    int lineNumber = -1;
+    _screen->setCursor(0, BODY_Y_POSITION);
+
+    for(auto error : globalSystemState->getAllErrors()){
+        lineNumber++;
+        if(lineNumber < _scrollerPosition) continue; 
+
+        String errorSeverityStr;
+        switch(error.severity){
+            case SystemErrorSeverity::SystemError: errorSeverityStr = "!!"; break;
+            case SystemErrorSeverity::SystemWarning: errorSeverityStr = "! "; break;
+        }
+
+        size_t lineHeight = _screen->print(
+            errorSeverityStr + " [" + String((int)error.errorCode) + "] "+ error.description,
+            OLEDFont::FONT_SMALLEST);
+
+        _screen->setCursor(0, BODY_Y_POSITION + lineHeight + 5);
+    }
+    _screen->render();
+}
+
+void MenuController::showDebugScreen(){
+    printMenu();
 }
 
 void MenuController::selectNextOption(){
@@ -90,6 +173,7 @@ void MenuController::selectPreviousOption(){
 }
 
 void MenuController::clickOption(){
+    if(getCurrentScreenOptionsCount() == 0) return;
     showMenu(getSelectedOption().nextScreen);
 }
 

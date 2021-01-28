@@ -1,8 +1,13 @@
 #include "ApplicationServices/UIController.h"
+#include "GlobalObjects/GlobalSystemState.h"
+extern GlobalSystemState* globalSystemState;
 
-UIController::UIController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider){
+UIController::UIController(
+    HardwareModulesRegistry* hardwareModulesRegistry, 
+    HealthcheckController* healthcheckController)
+{
     _screen = new ScreenController(hardwareModulesRegistry);
-    _menuController = new MenuController(hardwareModulesRegistry, healthCheckProvider);
+    _menuController = new MenuController(hardwareModulesRegistry, healthcheckController);
     _ledIndicators = new LEDIndicatorsController(hardwareModulesRegistry);
     _inputsController = new InputsController(hardwareModulesRegistry);
 
@@ -46,6 +51,12 @@ void UIController::updateInputs() {
             case ButtonPressed::NONE:break;
         }
     }
+
+    if(buttonPressed != ButtonPressed::NONE && globalSystemState->isNightMode){
+        globalSystemState->isNightMode = false;        
+        _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
+        showCurrentWeather();
+    }
 }
 
 void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
@@ -54,7 +65,11 @@ void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 }
 
 void UIController::showCurrentWeather(){
-    if(!_isMenuMode){
+    if(globalSystemState->isNightMode){
+        _currentScreenMode = ScreenMode::OFF;
+    }
+
+    if(!_isMenuMode){        
         switch (_currentScreenMode){
             case ScreenMode::OFF: _screen->clearScreen();break;
             case ScreenMode::TEMPERATURE_OUTSIDE: _screen->showOutdoorTemperature(_currentWeather);break;
@@ -62,11 +77,16 @@ void UIController::showCurrentWeather(){
             case ScreenMode::METEO_OUTSIDE: _screen->showOutdoorHumidityAndPressure(_currentWeather);break;
             case ScreenMode::METEO_INSIDE: _screen->showIndoorWeather(_currentWeather);break;
             case ScreenMode::AIR_QULITY: _screen->showAirQualityMeasurements(_currentWeather);break;
-        }
+        }        
     }
 
-    _ledIndicators->setPollutionLevel(_currentWeather);
-    _ledIndicators->setWeatherStatusLed(_currentWeather);
+    if(globalSystemState->isNightMode){
+        _ledIndicators->clearAllIndicators();
+    }
+    else {
+        _ledIndicators->setPollutionLevel(_currentWeather);
+        _ledIndicators->setWeatherStatusLed(_currentWeather);
+    }
 }
 
 void UIController::flipScreenMode(bool forward){

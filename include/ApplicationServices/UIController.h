@@ -4,12 +4,12 @@
 #include "UI/ScreenController.h"
 #include "UI/InputsController.h"
 #include "Models/WeatherMonitorData.h"
-#include "Healthchecks/HealthcheckProvider.h"
+#include "Healthchecks/HealthcheckController.h"
 
 class UIController
 {
 public:
-    UIController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckProvider* healthCheckProvider);
+    UIController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckController* healthcheckController);
     void updateUI();
     void onWeatherUpdated(WeatherMonitorData weatherMonitorData);
     void enableMenuMode(bool debugMode = false);
@@ -27,7 +27,6 @@ private:
     InputsController* _inputsController;
 
     WeatherMonitorData _currentWeather;
-    bool _isNightMode = false;
     bool _isMenuMode = false;
     ScreenMode _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
 };

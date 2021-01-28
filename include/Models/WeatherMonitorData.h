@@ -19,20 +19,22 @@ enum class PressureLevel {
 };
 
 struct WeatherMonitorData {
-    bool isDataReceived;
     long timeStampOfStart;
     long timeStampOfFinish;
     
-    int humidityOutside;
-    float temperatureOutside;
-    float pressureOutside;
+    bool isOutsideMeteoDataReceived;
+    int humidityOutside = 0;
+    float temperatureOutside = 0;
+    float pressureOutside = 0;
 
-    float temperatureInside;
-    int humidityInside;
+    bool isInsideMeteoDataReceived;
+    float temperatureInside = 0;
+    int humidityInside = 0;
 
-    int PM1_0;
-    int PM2_5; //µg/m3
-    int PM_10_0;
+    bool isPMDataReceived;
+    int PM1_0 = 0;
+    int PM2_5 = 0; //µg/m3
+    int PM_10_0 = 0;
 
     float TVOC;
     float H2CO;
@@ -41,13 +43,16 @@ struct WeatherMonitorData {
     // AQI (US)
     int calculateAQI(){
         int AQI = 0;
-        if(PM2_5 >= 0 && PM2_5 < 12) AQI = PM2_5 * 50 / 12;
-        else if(PM2_5 >= 12 && PM2_5 < 35) AQI = PM2_5 * 100 / 35;
-        else if(PM2_5 >= 35 && PM2_5 < 55) AQI = PM2_5 * 150 / 55;
-        else if(PM2_5 >= 55 && PM2_5 < 150) AQI = PM2_5 * 200 / 150;
-        else if(PM2_5 >= 150 && PM2_5 < 250) AQI = PM2_5 * 300 / 250;
-        else if(PM2_5 >= 250 && PM2_5 < 350) AQI = PM2_5 * 400 / 350;
-        else if(PM2_5 >= 350) AQI = PM2_5 * 500 / 500;
+
+        if(isPMDataReceived){
+            if(PM2_5 >= 0 && PM2_5 < 12) AQI = PM2_5 * 50 / 12;
+            else if(PM2_5 >= 12 && PM2_5 < 35) AQI = PM2_5 * 100 / 35;
+            else if(PM2_5 >= 35 && PM2_5 < 55) AQI = PM2_5 * 150 / 55;
+            else if(PM2_5 >= 55 && PM2_5 < 150) AQI = PM2_5 * 200 / 150;
+            else if(PM2_5 >= 150 && PM2_5 < 250) AQI = PM2_5 * 300 / 250;
+            else if(PM2_5 >= 250 && PM2_5 < 350) AQI = PM2_5 * 400 / 350;
+            else if(PM2_5 >= 350) AQI = PM2_5 * 500 / 500;
+        }
 
         return AQI;
     }
@@ -63,17 +68,25 @@ struct WeatherMonitorData {
 
         doc["timeStampOfStart"] = timeStampOfStart;
         doc["timeStampOfFinish"] = timeStampOfFinish;
-        doc["temperatureOutside"] = temperatureOutside;
-        doc["humidityOutside"] = humidityOutside;
-        doc["pressureOutside"] = pressureOutside;
-        doc["temperatureInside"] = temperatureInside;
-        doc["humidityInside"] = humidityInside;
-        doc["PM1_0"] = PM1_0;
-        doc["PM2_5"] = PM2_5;
-        doc["PM_10_0"] = PM_10_0;
+
+        if(isOutsideMeteoDataReceived){
+            doc["temperatureOutside"] = temperatureOutside;
+            doc["humidityOutside"] = humidityOutside;
+            doc["pressureOutside"] = pressureOutside;
+        }
+        if(isInsideMeteoDataReceived){
+            doc["temperatureInside"] = temperatureInside;
+            doc["humidityInside"] = humidityInside;
+        }
+        if(isPMDataReceived){
+            doc["PM1_0"] = PM1_0;
+            doc["PM2_5"] = PM2_5;
+            doc["PM_10_0"] = PM_10_0;
+        }
+/*
         doc["TVOC"] = TVOC;
         doc["H2CO"] = H2CO;
-        doc["NO2"] = NO2;
+        doc["NO2"] = NO2;*/
 
         String output;
         serializeJson(doc, output);

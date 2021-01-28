@@ -11,6 +11,7 @@ public:
     void setPollutionLevel(WeatherMonitorData weatherData);
     void setWeatherStatusLed(WeatherMonitorData weatherData);
     void updateSystemStatusLed();
+    void clearAllIndicators();
 
 private:
     RGBLed* _pollutionRGBLed;

@@ -30,25 +30,26 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 void WeatherMonitor::startMeasuring(){
     _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS * 1000);
     state = WeatherMonitorState::MEASURING;    
-    globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Measuring);    
+    globalSystemState->setSystemStatus(SystemStatus::Measuring);    
     _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
     
     _hardwareModulesRegistry->airParticiplesSensor->beginMeasurement();
 }
 
 void WeatherMonitor::finishMeasuring(){
-    _timer->interval(WEATHER_MONITOR_INTERVAL_SECONDS * 1000);
-    WeatherMonitorData data {.isDataReceived = false};
+    if(globalSystemState->isNightMode)_timer->interval(WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS * 1000);
+    else _timer->interval(WEATHER_MONITOR_INTERVAL_SECONDS * 1000);
+    WeatherMonitorData data;
 
     PmsData airParticiplesData = _hardwareModulesRegistry->airParticiplesSensor->endMeasurement();
     BME280Data outdoorMeteoData = _hardwareModulesRegistry->outdoorMeteoSensor->getData();
     DHTData indoorMeteoData = _hardwareModulesRegistry->indoorMeteoSensor->getData();
 
-    if(airParticiplesData.isDataReceived || outdoorMeteoData.isDataReceived || indoorMeteoData.isDataReceived){
-        data.isDataReceived = true;
-        data.timeStampOfStart = _startMeasuringTimestamp;
-        data.timeStampOfFinish = globalSystemState->getCurrentTimestamp();
-    }
+    data.isOutsideMeteoDataReceived = outdoorMeteoData.isDataReceived;
+    data.isInsideMeteoDataReceived = indoorMeteoData.isDataReceived;
+    data.isPMDataReceived = airParticiplesData.isDataReceived;
+    data.timeStampOfStart = _startMeasuringTimestamp;
+    data.timeStampOfFinish = globalSystemState->getCurrentTimestamp();
 
     if(airParticiplesData.isDataReceived){
         data.PM1_0 = airParticiplesData.PM_1_0;
@@ -68,6 +69,6 @@ void WeatherMonitor::finishMeasuring(){
     }
 
     state = WeatherMonitorState::IDLE;
-    globalSystemState->setSystemStatus(GlobalSystemState::SystemStatus::Idle);    
+    globalSystemState->setSystemStatus(SystemStatus::Idle);    
     if(_onUpdateCallback != NULL) _onUpdateCallback(data);
 }

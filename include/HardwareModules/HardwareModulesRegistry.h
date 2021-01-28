@@ -19,7 +19,9 @@ class HardwareModulesRegistry
 {
 public:
     HardwareModulesRegistry();
-    void reconnectAllDevices();
+    void reconnectAllDisconnectedDevices(bool onlyCritical = false);
+    void resetDevice(HardwareDeviceId deviceId);
+    IHardwareModule* getDevice(HardwareDeviceId deviceId);
 
     MCPExtender* mcpExtender;
     OLED* oledScreen;
@@ -28,8 +30,7 @@ public:
     IndoorMeteoSensor* indoorMeteoSensor;
     OutdoorMeteoSensor* outdoorMeteoSensor;
     
-private:    
-    std::map<HardwareDeviceId, IHardwareModule*> _hardwareModules;
+    std::map<HardwareDeviceId, IHardwareModule*> hardwareModules;
 };
 
 #endif

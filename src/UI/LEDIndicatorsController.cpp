@@ -22,6 +22,8 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwa
 }
 
 void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
+    if(!weatherData.isPMDataReceived) return;
+    
     int aqi = weatherData.calculateAQI();
     if(aqi >= (int)AQILevel::Good && aqi < (int)AQILevel::Moderate) _pollutionRGBLed->setColor(0, 255, 0);
     else if(aqi >= (int)AQILevel::Moderate && aqi < (int)AQILevel::UnhealthyForSensitiveGroups) _pollutionRGBLed->setColor(255, 255, 0);
@@ -32,6 +34,8 @@ void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
 }
 
 void LEDIndicatorsController::setWeatherStatusLed(WeatherMonitorData weatherData){    
+    if(!weatherData.isOutsideMeteoDataReceived) return;
+
     _mcp->digitalWrite(LED_TEMPERATURE, weatherData.temperatureOutside <= 0);
     _mcp->digitalWrite(LED_PRESSURE, weatherData.getPressureLevel() != PressureLevel::Normal);
 }
@@ -48,27 +52,48 @@ void LEDIndicatorsController::updateSystemStatusLed(){
         _timerFast->resetStatus();
     }
 
-    switch(globalSystemState->powerStatus){
-        case GlobalSystemState::PowerStatus::Regular:
-            _mcp->digitalWrite(LED_POWER, HIGH);break;
-        case GlobalSystemState::PowerStatus::Reserve:
-            _mcp->digitalWrite(LED_POWER, _slowBlinkingLedOn);break;
-        case GlobalSystemState::PowerStatus::Warning:
-            _mcp->digitalWrite(LED_POWER, _fastBlinkingLedOn);break;
-    }
+    auto ledPowerPin = globalSystemState->isNightMode ? LED_POWER_NIGHT : LED_POWER;
 
-    switch(globalSystemState->systemStatus){
-        case GlobalSystemState::SystemStatus::Idle:
-            _mcp->digitalWrite(LED_STATUS, LOW);break;
-        case GlobalSystemState::SystemStatus::Measuring:
-            _mcp->digitalWrite(LED_STATUS, HIGH);break;
-        case GlobalSystemState::SystemStatus::DataTransfer:
-            _mcp->digitalWrite(LED_STATUS, _slowBlinkingLedOn);break;
-        case GlobalSystemState::SystemStatus::SystemWarning:
-            _mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);break;
-        case GlobalSystemState::SystemStatus::FatalFailure:
-            _mcp->digitalWrite(LED_POWER, _fastBlinkingLedOn);
-            _mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);break;
+    if(globalSystemState->systemHealth == HealthStatus::HEALTH_ERROR){
+            _mcp->digitalWrite(ledPowerPin, _fastBlinkingLedOn);
+            if(!globalSystemState->isNightMode)_mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);
     }
+    else {
+        switch(globalSystemState->powerStatus){
+            case PowerStatus::Unknown:
+            case PowerStatus::Regular:
+                _mcp->digitalWrite(ledPowerPin, HIGH);break;
+            case PowerStatus::Reserve:
+                _mcp->digitalWrite(ledPowerPin, _slowBlinkingLedOn);break;
+        }
 
+        if(globalSystemState->isNightMode){
+            _mcp->digitalWrite(LED_STATUS, LOW);
+            return;
+        }
+
+        if(globalSystemState->systemHealth == HealthStatus::HEALTH_WARNING){
+                _mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);
+        }
+        else {
+            switch(globalSystemState->systemStatus){
+                case SystemStatus::Unknown:
+                case SystemStatus::Idle:
+                    _mcp->digitalWrite(LED_STATUS, LOW);break;
+                case SystemStatus::Measuring:
+                    _mcp->digitalWrite(LED_STATUS, HIGH);break;
+                case SystemStatus::DataTransfer:
+                    _mcp->digitalWrite(LED_STATUS, _slowBlinkingLedOn);break;
+            }
+        }
+    }
+}
+
+void LEDIndicatorsController::clearAllIndicators(){
+    _mcp->digitalWrite(LED_POWER, LOW);
+    _mcp->digitalWrite(LED_POWER_NIGHT, LOW);
+    _mcp->digitalWrite(LED_STATUS, LOW);
+    _mcp->digitalWrite(LED_TEMPERATURE, LOW);
+    _mcp->digitalWrite(LED_PRESSURE, LOW);
+    _pollutionRGBLed->setColor(0, 0, 0);
 }

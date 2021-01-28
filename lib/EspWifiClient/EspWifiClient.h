@@ -4,7 +4,7 @@
 
 struct HttpResponse {
     bool success;
-    uint8_t statusCode;
+    int statusCode;
     String payload;
 };
 

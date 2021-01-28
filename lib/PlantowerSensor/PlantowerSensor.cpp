@@ -19,7 +19,7 @@ PlantowerSensor::PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin) :
     _setPin = setPin;
 }
 
-bool PlantowerSensor::connect(bool waitUntilConnected)
+bool PlantowerSensor::connect(bool connectionProbe)
 {
     if(_rxPin != 0 || _txPin != 0){
         // Create serial bus using Software serial
@@ -41,9 +41,11 @@ bool PlantowerSensor::connect(bool waitUntilConnected)
     _pms->wakeUp();    
     delay(1000);
     
+    isConnected = true;
+    if(connectionProbe && !readData().isDataReceived)isConnected = false;
+
     _pms->sleep();
     isInSleepMode = true;
-    isConnected = true;
 
     return isConnected;
 }
@@ -64,7 +66,7 @@ void PlantowerSensor::wakeUp()
     isInSleepMode = false;
 }
 
-PmsData PlantowerSensor::readData()
+PmsData PlantowerSensor::readData(uint16_t timeout)
 {
     if(!isConnected) return FAILED_DATA;
 
@@ -75,7 +77,7 @@ PmsData PlantowerSensor::readData()
 
     _pms->requestRead();
 
-    if (_pms->readUntil(data))
+    if (_pms->readUntil(data, timeout))
     {
         return PmsData {
             .isDataReceived = true,

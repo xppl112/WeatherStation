@@ -15,12 +15,12 @@ public:
     PlantowerSensor();
     PlantowerSensor(uint8_t rxPin, uint8_t txPin, uint8_t setPin = 0);
 
-    bool connect(bool waitUntilConnected = false);
+    bool connect(bool connectionProbe = true);
 
     void sleep();
     void wakeUp();
 
-    PmsData readData();
+    PmsData readData(uint16_t timeout = 1000);
     PmsData readDataSyncronioslyAndSleep();
 
     bool isConnected;
