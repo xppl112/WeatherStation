@@ -1,5 +1,6 @@
 #include "ApplicationServices/UIController.h"
 #include "GlobalObjects/GlobalSystemState.h"
+#include "Config.h"
 extern GlobalSystemState* globalSystemState;
 
 UIController::UIController(
@@ -16,8 +17,13 @@ UIController::UIController(
 
 void UIController::updateUI() {    
     updateInputs();
+    _isUserInteracts = (globalSystemState->getCurrentTimestamp() - _lastUserInteractionTimestamp) 
+                        < USER_INTERACTION_TIMEOUT_SECONDS;
     
     _ledIndicators->updateSystemStatusLed();
+    if(_isMenuMode){
+        _menuController->refresh();
+    }
 }
 
 void UIController::updateInputs() {
@@ -52,10 +58,14 @@ void UIController::updateInputs() {
         }
     }
 
-    if(buttonPressed != ButtonPressed::NONE && globalSystemState->isNightMode){
-        globalSystemState->isNightMode = false;        
-        _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
-        showCurrentWeather();
+    if(buttonPressed != ButtonPressed::NONE){
+        _lastUserInteractionTimestamp = globalSystemState->getCurrentTimestamp();
+
+        if(globalSystemState->isNightMode){
+            globalSystemState->isNightMode = false;        
+            _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
+            showCurrentWeather();
+        }
     }
 }
 
@@ -65,7 +75,7 @@ void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 }
 
 void UIController::showCurrentWeather(){
-    if(globalSystemState->isNightMode){
+    if(globalSystemState->isNightMode && !_isUserInteracts){
         _currentScreenMode = ScreenMode::OFF;
     }
 
@@ -80,7 +90,7 @@ void UIController::showCurrentWeather(){
         }        
     }
 
-    if(globalSystemState->isNightMode){
+    if(globalSystemState->isNightMode && !_isUserInteracts){
         _ledIndicators->clearAllIndicators();
     }
     else {

@@ -1,4 +1,7 @@
 #include "UI/MenuController.h"
+#include "DateTimeUtils.h"
+#include "SystemUtils.h"
+#include "Config.h"
 #include "GlobalObjects/GlobalSystemState.h"
 extern GlobalSystemState* globalSystemState;
 
@@ -10,6 +13,9 @@ MenuController::MenuController(HardwareModulesRegistry* hardwareModulesRegistry,
     _screen = hardwareModulesRegistry->oledScreen;
     _hardwareModulesRegistry = hardwareModulesRegistry;
     _healthcheckController = healthcheckController;
+    
+    _screenRefreshTimer = new Ticker(MENU_REFRESH_INTERVAL_SECONDS * 1000, NULL, MILLIS);
+    _screenRefreshTimer->start();
 }
 
 void MenuController::showMenu(MenuMode menuMode){
@@ -25,6 +31,9 @@ void MenuController::updateMenu(){
             break;
         case MenuMode::MENU_CURRENT_STATE:
             showCurrentState();
+            break;
+        case MenuMode::MENU_SYSTEM_INFO:
+            showSystemInfo();
             break;
         case MenuMode::MENU_ERRORS_LOG:
             showErrorsLog();
@@ -55,6 +64,14 @@ void MenuController::buttonPressed(ButtonPressed button){
         case ButtonPressed::LEFTRIGHT:break;
         case ButtonPressed::NONE:break;
     }
+}
+
+void MenuController::refresh(){
+    _screenRefreshTimer->update();
+    if(_screenRefreshTimer->state() == FIRED){
+        if(getCurrentScreen().autoRefresh) updateMenu();
+        _screenRefreshTimer->resetStatus();
+    }   
 }
 
 void MenuController::printMenu(){
@@ -110,49 +127,59 @@ void MenuController::showDevicesInfo(){
 
 void MenuController::showCurrentState(){
     printMenu();
-    _screen->setWordWrapMode(true);
-
-    int lineNumber = -1;
-    _screen->setCursor(0, BODY_Y_POSITION);
 
     std::vector<String> currentStateVariables;
-    currentStateVariables.push_back("Datetime: ");
+    currentStateVariables.push_back("Datetime: " + DateTimeUtils::formatFromTimestamp(globalSystemState->getCurrentTimestamp()));
     currentStateVariables.push_back("NightMode: " + globalSystemState->isNightMode? "ON" : "OFF");
+    currentStateVariables.push_back("Unsync data: " + 
+                                    String(globalSystemState->unsyncronizedWeatherReports) + " weather reports; " + 
+                                    String(globalSystemState->unsyncronizedHealthReports) + " health reports");
 
-    for(auto variable : currentStateVariables){
-        lineNumber++;
-        if(lineNumber < _scrollerPosition) continue; 
+    printStringLines(currentStateVariables);
+}
 
-        size_t lineHeight = _screen->print(variable, OLEDFont::FONT_SMALLEST);
-        _screen->setCursor(0, BODY_Y_POSITION + lineHeight + 5);
-    }
+void MenuController::showSystemInfo(){
+    printMenu();
 
-    _screen->render();
+    std::vector<String> infoCollection;
+    infoCollection.push_back("RAM: " + String((int)(SystemUtils::getFreeRAMBytes()/1024)) + " / " +
+                                    String((int)(SystemUtils::getTotalRAMBytes()/1024)) + " KB");
+    infoCollection.push_back("CPU: " + String(SystemUtils::getCPUSpeedMHz()) + " MHz");   
+
+    printStringLines(infoCollection);
 }
 
 void MenuController::showErrorsLog(){
     printMenu();
-    _screen->setWordWrapMode(true);
-
-    int lineNumber = -1;
-    _screen->setCursor(0, BODY_Y_POSITION);
+    std::vector<String> errorsStrings;
 
     for(auto error : globalSystemState->getAllErrors()){
-        lineNumber++;
-        if(lineNumber < _scrollerPosition) continue; 
-
         String errorSeverityStr;
         switch(error.severity){
             case SystemErrorSeverity::SystemError: errorSeverityStr = "!!"; break;
             case SystemErrorSeverity::SystemWarning: errorSeverityStr = "! "; break;
         }
 
-        size_t lineHeight = _screen->print(
-            errorSeverityStr + " [" + String((int)error.errorCode) + "] "+ error.description,
-            OLEDFont::FONT_SMALLEST);
+        errorsStrings.push_back(
+            errorSeverityStr + " [" + String((int)error.errorCode) + "] "+ error.description);
+    }
 
+    printStringLines(errorsStrings);
+}
+
+void MenuController::printStringLines(std::vector<String> strings){
+    _screen->setWordWrapMode(true);
+    int lineNumber = -1;
+    _screen->setCursor(0, BODY_Y_POSITION);
+
+    for(auto line : strings){
+        lineNumber++;
+        if(lineNumber < _scrollerPosition) continue;
+
+        size_t lineHeight = _screen->print(line, OLEDFont::FONT_SMALLEST);
         _screen->setCursor(0, BODY_Y_POSITION + lineHeight + 5);
     }
+
     _screen->render();
 }
 

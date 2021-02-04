@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "SystemUtils.h"
+extern "C" {
+    #include "user_interface.h"
+}
 
 void SystemUtils::printAllI2C(){
     byte error, address;
@@ -43,10 +46,14 @@ bool SystemUtils::isI2CDeviceConnected(uint8_t address){
     return false;
 }
 
-extern "C" {
-    #include "user_interface.h"
+int SystemUtils::getFreeRAMBytes() {
+    return system_get_free_heap_size();
 }
 
-int getFreeMemory() {
-    return system_get_free_heap_size();
+int SystemUtils::getTotalRAMBytes() {
+    return 81920;//TODO: retrieve info
+}
+
+uint8_t SystemUtils::getCPUSpeedMHz() {
+    return system_get_cpu_freq();
 }

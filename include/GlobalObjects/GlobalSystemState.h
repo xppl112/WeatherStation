@@ -39,6 +39,8 @@ public:
     volatile HealthStatus systemHealth = HealthStatus::HEALTH_OK;
     
     volatile bool isNightMode = false;
+    volatile uint8_t unsyncronizedWeatherReports = 0;
+    volatile uint8_t unsyncronizedHealthReports = 0;
 
     unsigned long getCurrentTimestamp(){
         if(_timeStampSnapshot == 0) return 0;

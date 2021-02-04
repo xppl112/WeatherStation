@@ -1,4 +1,6 @@
 #include "ApplicationServices/SystemModeController.h"
+#include "DateTimeUtils.h"
+#include "Config.h"
 #include "GlobalObjects/GlobalSystemState.h"
 extern GlobalSystemState* globalSystemState;
 
@@ -17,5 +19,14 @@ void SystemModeController::refresh() {
 }
 
 void SystemModeController::checkNightMode() {    
-      
+    auto currentTimestamp = globalSystemState->getCurrentTimestamp();
+    if(currentTimestamp == 0) return;
+
+    auto curentHour = DateTimeUtils::getHourFromTimestamp(currentTimestamp);
+    if(curentHour >= NIGHT_MODE_HOUR_FROM && curentHour < NIGHT_MODE_HOUR_TO){
+        globalSystemState->isNightMode = true;
+    }
+    else {
+        globalSystemState->isNightMode = false;
+    }
 }

@@ -4,6 +4,7 @@
 #include "InputsController.h"
 #include "MenuConfiguration.h"
 #include "OLED.h"
+#include "Ticker.h"
 
 class MenuController
 {
@@ -11,6 +12,7 @@ public:
     MenuController(HardwareModulesRegistry* hardwareModulesRegistry, HealthcheckController* healthcheckController);
     void showMenu(MenuMode menuMode = MAIN_MENU_MODE);
     void buttonPressed(ButtonPressed button);
+    void refresh();
 
     bool isMenuActive() { return _menuMode != OFF_MENU_MODE; }
 
@@ -26,9 +28,11 @@ private:
 
     void updateMenu();
     void printMenu();
+    void printStringLines(std::vector<String> strings);
 
     void showDevicesInfo();
     void showCurrentState();
+    void showSystemInfo();
     void showErrorsLog();
     void showDebugScreen();
 
@@ -39,4 +43,6 @@ private:
 
     HardwareModulesRegistry* _hardwareModulesRegistry;
     HealthcheckController* _healthcheckController;    
+
+    Ticker* _screenRefreshTimer;
 };

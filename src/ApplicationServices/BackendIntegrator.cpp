@@ -61,6 +61,8 @@ void BackendIntegrator::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 
         globalSystemState->setSystemStatus(SystemStatus::Idle);    
     }
+ 
+    globalSystemState->unsyncronizedWeatherReports = _weatherMonitorDataCollection.size();
 }
 
 void BackendIntegrator::sendSystemStatusReport(){
@@ -83,6 +85,8 @@ void BackendIntegrator::sendSystemStatusReport(){
 
         globalSystemState->setSystemStatus(currentSystemStatus);
     }
+    
+    globalSystemState->unsyncronizedHealthReports = _systemHealthReportsCollection.size();
 }
 
 void BackendIntegrator::collectWeatherUpdate(WeatherMonitorData weatherMonitorData){

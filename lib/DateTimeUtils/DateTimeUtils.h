@@ -4,7 +4,7 @@
 class DateTimeUtils
 {
 public:
-  static String formatFromTimestamp(unsigned long timestamp, bool date = true, bool time = true);
+  static String formatFromTimestamp(unsigned long timestamp, bool showDate = true, bool showTime = true);
   static int getHourFromTimestamp(unsigned long timestamp);
 
 private:

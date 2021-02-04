@@ -28,5 +28,7 @@ private:
 
     WeatherMonitorData _currentWeather;
     bool _isMenuMode = false;
+    unsigned long _lastUserInteractionTimestamp = 0;
+    bool _isUserInteracts = false;
     ScreenMode _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
 };

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "DateTimeUtils.h"
 
-String DateTimeUtils::formatFromTimestamp(unsigned long timestamp, bool date = true, bool time = true){
+String DateTimeUtils::formatFromTimestamp(unsigned long timestamp, bool showDate, bool showTime){
     tm* t = getLocalTime(timestamp);
 
     char str[30];

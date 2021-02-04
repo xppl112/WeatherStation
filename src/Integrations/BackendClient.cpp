@@ -19,6 +19,7 @@ int BackendClient::GetServerTime(){
                 SystemErrorCode::Network_BackendServerConnectionFailure, 
                 SystemErrorSeverity::SystemWarning, 
                 "Endpoint '"+ String(_config.ServerApiGetTimeUrl) +"' connection failed");
+            return -1;
         }
         else globalSystemState->removeError(SystemErrorCode::Network_BackendServerConnectionFailure);
 
@@ -41,7 +42,7 @@ bool BackendClient::SendWeatherData(std::queue<WeatherMonitorData>* weatherDataC
     if(weatherDataCollection->size() == 0) return true;
 
     if(connectWifi()){
-        for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum ++){
+        for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum++){
             auto weatherData = weatherDataCollection->front();
 
             if(sendPostJsonRequestWithLogging(
@@ -64,7 +65,7 @@ bool BackendClient::SendSystemStatusReports(std::queue<SystemHealthReport>* repo
     if(reportsCollection->size() == 0) return true;
 
     if(connectWifi()){
-        for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum ++){
+        for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum++){
             auto healthReport = reportsCollection->front();
 
             if(sendPostJsonRequestWithLogging(
@@ -94,6 +95,7 @@ bool BackendClient::sendPostJsonRequestWithLogging(const char* host, const char*
             SystemErrorCode::Network_BackendServerConnectionFailure, 
             SystemErrorSeverity::SystemWarning, 
             "Endpoint '"+ String(resource) +"' connection failed");
+        return false;
     }
     else globalSystemState->removeError(SystemErrorCode::Network_BackendServerConnectionFailure);
 
