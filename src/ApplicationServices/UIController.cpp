@@ -8,6 +8,7 @@ UIController::UIController(
     HealthcheckController* healthcheckController)
 {
     _screen = new ScreenController(hardwareModulesRegistry);
+    _ledDisplayController = new LEDDisplayController(hardwareModulesRegistry);
     _menuController = new MenuController(hardwareModulesRegistry, healthcheckController);
     _ledIndicators = new LEDIndicatorsController(hardwareModulesRegistry);
     _inputsController = new InputsController(hardwareModulesRegistry);
@@ -15,10 +16,9 @@ UIController::UIController(
     _screen->showSplashScreen();
 }
 
-void UIController::updateUI() {    
+void UIController::updateUI() {
+    updateOutputDevicesStatus(); 
     updateInputs();
-    _isUserInteracts = (globalSystemState->getCurrentTimestamp() - _lastUserInteractionTimestamp) 
-                        < USER_INTERACTION_TIMEOUT_SECONDS;
     
     _ledIndicators->updateSystemStatusLed();
     if(_isMenuMode){
@@ -35,15 +35,15 @@ void UIController::updateInputs() {
             disableMenuMode();
         }
     }
-    else {
+    else if(_isScreenActive){
         switch(buttonPressed){
             case ButtonPressed::LEFT:
                 flipScreenMode(false);
-                showCurrentWeather();
+                redrawUI();
                 break;
             case ButtonPressed::RIGHT:
                 flipScreenMode(true);
-                showCurrentWeather();
+                redrawUI();
                 break;
             case ButtonPressed::UP:
                 enableMenuMode();
@@ -59,43 +59,50 @@ void UIController::updateInputs() {
     }
 
     if(buttonPressed != ButtonPressed::NONE){
-        _lastUserInteractionTimestamp = globalSystemState->getCurrentTimestamp();
-
-        if(globalSystemState->isNightMode){
-            globalSystemState->isNightMode = false;        
-            _currentScreenMode = ScreenMode::TEMPERATURE_OUTSIDE;
-            showCurrentWeather();
-        }
+        onInteraction();
+        redrawUI();
     }
 }
 
 void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
     _currentWeather = weatherMonitorData;
-    showCurrentWeather();
+    if(!globalSystemState->isNightMode){
+        onInteraction();
+    }
+
+    redrawUI();
 }
 
-void UIController::showCurrentWeather(){
-    if(globalSystemState->isNightMode && !_isUserInteracts){
-        _currentScreenMode = ScreenMode::OFF;
-    }
-
-    if(!_isMenuMode){        
-        switch (_currentScreenMode){
-            case ScreenMode::OFF: _screen->clearScreen();break;
-            case ScreenMode::TEMPERATURE_OUTSIDE: _screen->showOutdoorTemperature(_currentWeather);break;
-            case ScreenMode::AIR_POLLUTION: _screen->showAirPollution(_currentWeather);break;
-            case ScreenMode::METEO_OUTSIDE: _screen->showOutdoorHumidityAndPressure(_currentWeather);break;
-            case ScreenMode::METEO_INSIDE: _screen->showIndoorWeather(_currentWeather);break;
-            case ScreenMode::AIR_QULITY: _screen->showAirQualityMeasurements(_currentWeather);break;
-        }        
-    }
-
-    if(globalSystemState->isNightMode && !_isUserInteracts){
+void UIController::redrawUI(){
+    if(globalSystemState->isNightMode && !_isInteraction){
         _ledIndicators->clearAllIndicators();
     }
     else {
         _ledIndicators->setPollutionLevel(_currentWeather);
         _ledIndicators->setWeatherStatusLed(_currentWeather);
+    }
+
+    if(_isLedDisplayActive){
+        switch (_currentLedDisplayMode){
+            case LedDisplayMode::OFF: _ledDisplayController->clearScreen();break;
+            case LedDisplayMode::TEMPERATURE_OUTSIDE: _ledDisplayController->showOutdoorTemperature(_currentWeather);break;
+            case LedDisplayMode::AIR_POLLUTION: _ledDisplayController->showAirPollution(_currentWeather);break;
+        }   
+    }
+    else _ledDisplayController->clearScreen();
+
+    if(!_isMenuMode){        
+        if(_isScreenActive){
+            switch (_currentScreenMode){
+                case ScreenMode::OFF: _screen->clearScreen();break;
+                case ScreenMode::TEMPERATURE_OUTSIDE: _screen->showOutdoorTemperature(_currentWeather);break;
+                case ScreenMode::AIR_POLLUTION: _screen->showAirPollution(_currentWeather);break;
+                case ScreenMode::METEO_OUTSIDE: _screen->showOutdoorHumidityAndPressure(_currentWeather);break;
+                case ScreenMode::METEO_INSIDE: _screen->showIndoorWeather(_currentWeather);break;
+                case ScreenMode::AIR_QULITY: _screen->showAirQualityMeasurements(_currentWeather);break;
+            } 
+        }       
+        else _screen->clearScreen();
     }
 }
 
@@ -117,5 +124,32 @@ void UIController::enableMenuMode(bool debugMode){
 
 void UIController::disableMenuMode(){
     _isMenuMode = false;
-    showCurrentWeather();
+    redrawUI();
+}
+
+void UIController::onInteraction(){
+    _lastInteractionTimestamp = globalSystemState->getCurrentTimestamp();
+    updateOutputDevicesStatus();
+}
+
+void UIController::updateOutputDevicesStatus(){
+    bool oldIsScreenActive = _isScreenActive;
+    bool oldIsLedDisplayActive = _isLedDisplayActive;
+
+    _isInteraction = (globalSystemState->getCurrentTimestamp() - _lastInteractionTimestamp) 
+                        < USER_INTERACTION_TIMEOUT_SECONDS;
+
+    if(_isInteraction){
+        _isScreenActive = true;
+        _isLedDisplayActive = true;
+    }
+    else {
+        _isScreenActive = false;
+        _isMenuMode = false;
+        _isLedDisplayActive = !globalSystemState->isNightMode; 
+    }
+
+    //UI redraw required
+    if(_isScreenActive != oldIsScreenActive || 
+       _isLedDisplayActive != oldIsLedDisplayActive)redrawUI();
 }

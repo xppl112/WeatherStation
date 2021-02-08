@@ -47,11 +47,11 @@ bool SystemUtils::isI2CDeviceConnected(uint8_t address){
 }
 
 int SystemUtils::getFreeRAMBytes() {
-    return system_get_free_heap_size();
+    return ESP.getFreeHeap() / 1024;
 }
 
 int SystemUtils::getTotalRAMBytes() {
-    return 81920;//TODO: retrieve info
+    return (float)ESP.getFlashChipSize() / 1024.0;
 }
 
 uint8_t SystemUtils::getCPUSpeedMHz() {
