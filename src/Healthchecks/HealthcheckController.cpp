@@ -1,4 +1,5 @@
 #include "Healthchecks/HealthcheckController.h"
+#include "SystemUtils.h"
 #include "Config.h"
 #include "GlobalObjects/GlobalSystemState.h"
 extern GlobalSystemState* globalSystemState;
@@ -7,11 +8,13 @@ HealthcheckController::HealthcheckController(HardwareModulesRegistry* hardwareMo
     hardwareDevicesHealthcheck = new HardwareDevicesHealthcheck(hardwareModulesRegistry);
     networkingHealthcheck = new NetworkingHealthcheck();    
     softwareHealthcheck = new SoftwareHealthcheck();    
+    powerHealthcheck = new PowerHealthcheck();    
     _hardwareModulesRegistry = hardwareModulesRegistry;
     
     _healthchecks.push_back(hardwareDevicesHealthcheck);
     _healthchecks.push_back(networkingHealthcheck);
     _healthchecks.push_back(softwareHealthcheck);
+    _healthchecks.push_back(powerHealthcheck);
 
     _timer = new Ticker(HEALTHCHECK_MONITOR_INTERVAL_SECONDS * 1000, NULL, MILLIS);
     _timer->start(true);
@@ -45,7 +48,8 @@ SystemHealthReport HealthcheckController::getSystemHealthReport(){
     report.timeStamp = globalSystemState->getCurrentTimestamp();
     report.systemHealth = globalSystemState->systemHealth;
     report.powerStatus = globalSystemState->powerStatus;    
-    report.inputVoltage = 0;
+    report.inputVoltage = powerHealthcheck->getInputVoltage();
+    report.freeRAM = SystemUtils::getFreeRAMBytes();
     report.networkingStatus = networkingHealthcheck->getStatus();
 
     report.systemErrors = globalSystemState->getAllErrors();

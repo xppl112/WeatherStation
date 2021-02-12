@@ -17,12 +17,15 @@ struct SystemHealthReport {
 
     std::map<String, HardwareDeviceStatus> hardwareDevices;
     NetworkingStatus networkingStatus;
+
+    unsigned int freeRAM;
   
     String toJson(){
         DynamicJsonDocument doc(1024);
 
         doc["timeStamp"] = timeStamp;
         doc["systemHealth"] = (int)systemHealth;
+        doc["freeRAM"] = freeRAM;
 
         JsonArray systemErrorsArray = doc.createNestedArray("systemErrors");
         for(auto error : systemErrors){

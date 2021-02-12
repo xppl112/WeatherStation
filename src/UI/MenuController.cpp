@@ -129,8 +129,8 @@ void MenuController::showCurrentState(){
     printMenu();
 
     std::vector<String> currentStateVariables;
-    currentStateVariables.push_back("Datetime: " + DateTimeUtils::formatFromTimestamp(globalSystemState->getCurrentTimestamp()));
-    currentStateVariables.push_back("NightMode: " + globalSystemState->isNightMode? "ON" : "OFF");
+    currentStateVariables.push_back("Datetime: " + DateTimeUtils::formatFromTimestamp(globalSystemState->getCurrentTimestamp(), TIMEZONE_HOURS_OFFSET));
+    currentStateVariables.push_back("NightMode: " + String(globalSystemState->isNightMode? "ON" : "OFF"));
     currentStateVariables.push_back("Unsync data: " + 
                                     String(globalSystemState->unsyncronizedWeatherReports) + " weather reports; " + 
                                     String(globalSystemState->unsyncronizedHealthReports) + " health reports");
@@ -142,10 +142,10 @@ void MenuController::showSystemInfo(){
     printMenu();
 
     std::vector<String> infoCollection;
-    infoCollection.push_back("RAM: " + String((int)(SystemUtils::getFreeRAMBytes()/1024)) + " / " +
-                                    String((int)(SystemUtils::getTotalRAMBytes()/1024)) + " KB");
+    infoCollection.push_back("RAM: " + String((int)(SystemUtils::getFreeRAMBytes())) + " / " +
+                                    String((int)(SystemUtils::getTotalRAMBytes())));
     infoCollection.push_back("CPU: " + String(SystemUtils::getCPUSpeedMHz()) + " MHz");   
-
+    infoCollection.push_back("Vin: " + String(_healthcheckController->powerHealthcheck->getInputVoltage()) + " V");   
     printStringLines(infoCollection);
 }
 
@@ -170,6 +170,7 @@ void MenuController::showErrorsLog(){
 void MenuController::printStringLines(std::vector<String> strings){
     _screen->setWordWrapMode(true);
     int lineNumber = -1;
+    int currentCursorPositionY = BODY_Y_POSITION;
     _screen->setCursor(0, BODY_Y_POSITION);
 
     for(auto line : strings){
@@ -177,7 +178,8 @@ void MenuController::printStringLines(std::vector<String> strings){
         if(lineNumber < _scrollerPosition) continue;
 
         size_t lineHeight = _screen->print(line, OLEDFont::FONT_SMALLEST);
-        _screen->setCursor(0, BODY_Y_POSITION + lineHeight + 5);
+        currentCursorPositionY += lineHeight + 5;
+        _screen->setCursor(0, currentCursorPositionY);
     }
 
     _screen->render();

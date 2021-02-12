@@ -6,6 +6,7 @@ enum class SystemErrorSeverity { SystemError, SystemWarning};
 enum class SystemErrorCode {
     Unknown = 0, 
     HandledNoncriticalException = 1, 
+    CriticalException = 2, 
 
     Network_WifiConnectionFailure = 30,
     Network_BackendServerConnectionFailure = 31,

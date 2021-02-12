@@ -43,6 +43,7 @@ bool BackendClient::SendWeatherData(std::queue<WeatherMonitorData>* weatherDataC
 
     if(connectWifi()){
         for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum++){
+            if(weatherDataCollection->size() == 0)break;
             auto weatherData = weatherDataCollection->front();
 
             if(sendPostJsonRequestWithLogging(
@@ -66,6 +67,7 @@ bool BackendClient::SendSystemStatusReports(std::queue<SystemHealthReport>* repo
 
     if(connectWifi()){
         for(int batchNum = 0; batchNum < _config.BatchRequestsMaxSize; batchNum++){
+            if(reportsCollection->size() == 0)break;
             auto healthReport = reportsCollection->front();
 
             if(sendPostJsonRequestWithLogging(

@@ -4,9 +4,9 @@
 class DateTimeUtils
 {
 public:
-  static String formatFromTimestamp(unsigned long timestamp, bool showDate = true, bool showTime = true);
-  static int getHourFromTimestamp(unsigned long timestamp);
+  static String formatFromTimestamp(unsigned long timestamp, uint8_t hoursOffset, bool showDate = true, bool showTime = true);
+  static int getHourFromTimestamp(unsigned long timestamp, uint8_t hoursOffset);
 
 private:
-  static tm* getLocalTime(unsigned long timestamp);
+  static tm* getLocalTime(unsigned long timestamp, uint8_t hoursOffset);
 };

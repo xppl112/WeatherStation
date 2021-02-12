@@ -4,6 +4,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+const uint8_t VOLTMETER_ANALOG_PIN = A0;
+const int VOLTMETER_R1 = 19400;
+const int VOLTMETER_R2 = 6740;
+const float VOLTMETER_ALERT_THRESHOLD_DANGEROUS = 5.6;
+const float VOLTMETER_ALERT_THRESHOLD_TOP = 5.3;
+const float VOLTMETER_ALERT_THRESHOLD_BOTTOM = 4.6;
+
 const uint8_t OLED_I2C_ADDR = 0x3C;
 const uint8_t BME_I2C_ADDR = 0x76;
 const uint8_t MCP_EXTENDER_I2C_ADDR = 0x20;
@@ -24,6 +31,8 @@ const uint8_t DHT_DATA_PIN = D5;
 const uint8_t LED_POWER = MCP_A0;
 const uint8_t LED_POWER_NIGHT = MCP_B0;
 const uint8_t LED_STATUS = MCP_A1;
+const uint8_t LED_DATA_TRANSFER = MCP_B1;
+const uint8_t LED_ERROR_STATUS = MCP_B2;
 const uint8_t LED_TEMPERATURE = MCP_A2;
 const uint8_t LED_PRESSURE = MCP_A3;
 
@@ -45,20 +54,23 @@ struct BackendClientConfig {
 };
 
 const uint8_t DATA_COLLECTION_CAPACITY = 100;
+const uint8_t SOFTWARE_ERRORS_RESTART_LIMIT = 10;
 
-const uint8_t WEATHER_MONITOR_INTERVAL_SECONDS = 5;
+const uint8_t WEATHER_MONITOR_INTERVAL_SECONDS = 60;
 const uint8_t WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 10; //60 - standard
 
-const uint8_t HEALTHCHECK_MONITOR_INTERVAL_SECONDS = 60;
+const uint8_t HEALTHCHECK_MONITOR_INTERVAL_SECONDS = 20;
 const uint8_t SYSTEM_STATUS_REPORT_INTERVAL_SECONDS = 60;
-const uint8_t TIME_UPDATE_INTERVAL_SECONDS = 60;
+const uint8_t TIME_UPDATE_INTERVAL_SECONDS = 180;
 
 const uint8_t MENU_REFRESH_INTERVAL_SECONDS = 2;
-const uint8_t USER_INTERACTION_TIMEOUT_SECONDS = 60;
+const uint8_t USER_INTERACTION_TIMEOUT_SECONDS = 30;
 
 // night-mode
 const uint8_t WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS = 30;
 const uint8_t NIGHT_MODE_HOUR_FROM = 0;
 const uint8_t NIGHT_MODE_HOUR_TO = 8;
+
+const uint8_t TIMEZONE_HOURS_OFFSET = 2;//TODO: move to server
 
 #endif

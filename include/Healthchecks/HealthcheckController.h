@@ -5,6 +5,7 @@
 #include "Healthchecks/HardwareDevicesHealthcheck.h"
 #include "Healthchecks/NetworkingHealthcheck.h"
 #include "Healthchecks/SoftwareHealthcheck.h"
+#include "Healthchecks/PowerHealthcheck.h"
 #include "Healthchecks/IHealthcheck.h"
 #include "Models/SystemHealthReport.h"
 #include <Ticker.h>
@@ -21,6 +22,7 @@ public:
     HardwareDevicesHealthcheck* hardwareDevicesHealthcheck;
     NetworkingHealthcheck* networkingHealthcheck;
     SoftwareHealthcheck* softwareHealthcheck;
+    PowerHealthcheck* powerHealthcheck;
 
 private:
     HardwareModulesRegistry* _hardwareModulesRegistry;

@@ -1,4 +1,5 @@
 #include "Healthchecks/SoftwareHealthcheck.h"
+#include "Config.h"
 #include "GlobalObjects/GlobalSystemState.h"
 extern GlobalSystemState* globalSystemState;
 
@@ -17,12 +18,16 @@ HealthStatus SoftwareHealthcheck::check(){
         else if(error.severity == SystemErrorSeverity::SystemError) status = HealthStatus::HEALTH_ERROR;
     }
 
+    handleCheckStatus(status);
     return status;
 }
 
-void SoftwareHealthcheck::handleCheckStatus(HealthStatus healthStatus){
-    /*
+void SoftwareHealthcheck::handleCheckStatus(HealthStatus healthStatus){    
     if(healthStatus == HealthStatus::HEALTH_ERROR){
-        ESP.restart();
-    }*/
+        _healthErrorDetectionCount++;
+        if(_healthErrorDetectionCount >= SOFTWARE_ERRORS_RESTART_LIMIT){
+            ESP.restart();
+        }
+    }
+    else _healthErrorDetectionCount = 0;
 }

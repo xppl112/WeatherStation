@@ -14,7 +14,8 @@ void WeatherMonitor::run(){
 }
 
 void WeatherMonitor::updateTimers(){
-    _timer->update();
+    if(globalSystemState->systemHealth != HealthStatus::HEALTH_ERROR)
+        _timer->update();
 
     if(_timer->state() == FIRED){
         if(state == WeatherMonitorState::IDLE)startMeasuring();

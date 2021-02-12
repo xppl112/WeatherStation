@@ -29,6 +29,9 @@ void BackendIntegrator::updateTimers(){
 }
 
 void BackendIntegrator::updateServerTime(){
+    auto currentSystemStatus = globalSystemState->systemStatus;
+    globalSystemState->setSystemStatus(SystemStatus::DataTransfer);  
+
     try {
         int serverTimestamp = _backendClient->GetServerTime();
         if(serverTimestamp != -1) globalSystemState->updateTime(serverTimestamp);
@@ -39,13 +42,22 @@ void BackendIntegrator::updateServerTime(){
             SystemErrorSeverity::SystemWarning,
             "updateServerTime: " + String(e.what())
         );        
-    }    
+    }   
+    catch(...){
+        globalSystemState->addError(
+            SystemErrorCode::HandledNoncriticalException,
+            SystemErrorSeverity::SystemWarning,
+            "updateServerTime");        
+    }   
+
+    globalSystemState->setSystemStatus(currentSystemStatus);     
 }
 
 void BackendIntegrator::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
     collectWeatherUpdate(weatherMonitorData);
 
     if(!globalSystemState->isNightMode){
+        auto currentSystemStatus = globalSystemState->systemStatus;
         globalSystemState->setSystemStatus(SystemStatus::DataTransfer);  
 
         try {
@@ -57,9 +69,15 @@ void BackendIntegrator::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
                 SystemErrorSeverity::SystemWarning,
                 "onWeatherUpdated: " + String(e.what())
             );        
-        } 
+        }           
+        catch(...){
+            globalSystemState->addError(
+                SystemErrorCode::HandledNoncriticalException,
+                SystemErrorSeverity::SystemWarning,
+                "onWeatherUpdated");        
+        }    
 
-        globalSystemState->setSystemStatus(SystemStatus::Idle);    
+        globalSystemState->setSystemStatus(currentSystemStatus);    
     }
  
     globalSystemState->unsyncronizedWeatherReports = _weatherMonitorDataCollection.size();
@@ -82,6 +100,12 @@ void BackendIntegrator::sendSystemStatusReport(){
                 "sendSystemStatusReport: " + String(e.what())
             );        
         } 
+        catch(...){
+            globalSystemState->addError(
+                SystemErrorCode::HandledNoncriticalException,
+                SystemErrorSeverity::SystemWarning,
+                "sendSystemStatusReport");        
+        }   
 
         globalSystemState->setSystemStatus(currentSystemStatus);
     }

@@ -6,7 +6,9 @@
 #include "Models/SystemErrorCodes.h"
 #include "Healthchecks/IHealthcheck.h"
 
-enum class PowerStatus {Unknown, Regular, Reserve};
+typedef void (*SystemStateUpdatedEventCallback)();
+
+enum class PowerStatus {Unknown, Regular, Reserve, Warning, DangerousVoltage};
 enum class SystemStatus {Unknown, Idle, Measuring, DataTransfer};
 
 struct SystemError {
@@ -42,6 +44,12 @@ public:
     volatile uint8_t unsyncronizedWeatherReports = 0;
     volatile uint8_t unsyncronizedHealthReports = 0;
 
+    SystemStateUpdatedEventCallback _onUpdateCallback;
+
+    void addUpdatedEventHandler(SystemStateUpdatedEventCallback callback){
+        _onUpdateCallback = callback;
+    }
+
     unsigned long getCurrentTimestamp(){
         if(_timeStampSnapshot == 0) return 0;
         unsigned long millisDiff = millis() - _millisSnaphot;
@@ -56,13 +64,18 @@ public:
     void setSystemStatus(SystemStatus status){
         if(getErrorsCount() == 0){
             systemStatus = status;
+            _onUpdateCallback();
         }
     }
 
     void setPowerStatus(PowerStatus status){
-        if(getErrorsCount() == 0){
-            powerStatus = status;
-        }
+        powerStatus = status;
+        _onUpdateCallback();
+    }
+
+    void setNightMode(bool nightMode){
+        isNightMode = nightMode; 
+        _onUpdateCallback();
     }
 
     void addError(SystemErrorCode code, SystemErrorSeverity severity = SystemErrorSeverity::SystemError, String description = ""){

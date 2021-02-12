@@ -9,7 +9,10 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwa
     _pollutionRGBLed = new RGBLed(RGB_LED_R_PIN, RGB_LED_G_PIN, RGB_LED_B_PIN, false);
      
     _mcp->pinMode(LED_POWER, OUTPUT);
+    _mcp->pinMode(LED_POWER_NIGHT, OUTPUT);
     _mcp->pinMode(LED_STATUS, OUTPUT);
+    _mcp->pinMode(LED_DATA_TRANSFER, OUTPUT);_mcp->digitalWrite(LED_DATA_TRANSFER, LOW);
+    _mcp->pinMode(LED_ERROR_STATUS, OUTPUT);_mcp->digitalWrite(LED_ERROR_STATUS, LOW);
     _mcp->pinMode(LED_TEMPERATURE, OUTPUT);_mcp->digitalWrite(LED_TEMPERATURE, LOW);
     _mcp->pinMode(LED_PRESSURE, OUTPUT);_mcp->digitalWrite(LED_PRESSURE, LOW);
 
@@ -52,11 +55,18 @@ void LEDIndicatorsController::updateSystemStatusLed(){
         _timerFast->resetStatus();
     }
 
-    auto ledPowerPin = globalSystemState->isNightMode ? LED_POWER_NIGHT : LED_POWER;
+    auto ledPowerPin = LED_POWER;
+    if(globalSystemState->isNightMode){
+         ledPowerPin = LED_POWER_NIGHT;
+        _mcp->digitalWrite(LED_POWER, LOW);
+    }
+    else _mcp->digitalWrite(LED_POWER_NIGHT, LOW);
 
-    if(globalSystemState->systemHealth == HealthStatus::HEALTH_ERROR){
-            _mcp->digitalWrite(ledPowerPin, _fastBlinkingLedOn);
-            if(!globalSystemState->isNightMode)_mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);
+    _mcp->digitalWrite(LED_DATA_TRANSFER, LOW);
+
+    if(globalSystemState->systemHealth == HealthStatus::HEALTH_ERROR){            
+            _mcp->digitalWrite(LED_STATUS, LOW);
+            _mcp->digitalWrite(LED_ERROR_STATUS, _fastBlinkingLedOn);
     }
     else {
         switch(globalSystemState->powerStatus){
@@ -64,15 +74,19 @@ void LEDIndicatorsController::updateSystemStatusLed(){
             case PowerStatus::Regular:
                 _mcp->digitalWrite(ledPowerPin, HIGH);break;
             case PowerStatus::Reserve:
+            case PowerStatus::Warning:
                 _mcp->digitalWrite(ledPowerPin, _slowBlinkingLedOn);break;
-        }
+            case PowerStatus::DangerousVoltage:
+                _mcp->digitalWrite(ledPowerPin, _fastBlinkingLedOn);break;
+        }        
 
         if(globalSystemState->isNightMode){
             _mcp->digitalWrite(LED_STATUS, LOW);
             return;
         }
 
-        if(globalSystemState->systemHealth == HealthStatus::HEALTH_WARNING){
+        if(globalSystemState->systemHealth == HealthStatus::HEALTH_WARNING && 
+           globalSystemState->systemStatus != SystemStatus::DataTransfer){
                 _mcp->digitalWrite(LED_STATUS, _fastBlinkingLedOn);
         }
         else {
@@ -83,16 +97,15 @@ void LEDIndicatorsController::updateSystemStatusLed(){
                 case SystemStatus::Measuring:
                     _mcp->digitalWrite(LED_STATUS, HIGH);break;
                 case SystemStatus::DataTransfer:
-                    _mcp->digitalWrite(LED_STATUS, _slowBlinkingLedOn);break;
+                    _mcp->digitalWrite(LED_STATUS, LOW);
+                    _mcp->digitalWrite(LED_DATA_TRANSFER, HIGH);
+                    break;
             }
         }
     }
 }
 
 void LEDIndicatorsController::clearAllIndicators(){
-    _mcp->digitalWrite(LED_POWER, LOW);
-    _mcp->digitalWrite(LED_POWER_NIGHT, LOW);
-    _mcp->digitalWrite(LED_STATUS, LOW);
     _mcp->digitalWrite(LED_TEMPERATURE, LOW);
     _mcp->digitalWrite(LED_PRESSURE, LOW);
     _pollutionRGBLed->setColor(0, 0, 0);

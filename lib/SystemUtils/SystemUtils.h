@@ -8,4 +8,5 @@ public:
   static int getFreeRAMBytes();
   static int getTotalRAMBytes();
   static uint8_t getCPUSpeedMHz();
+  static float getVoltageFromAnalogPin(uint8_t pin, int r1, int r2);
 };
