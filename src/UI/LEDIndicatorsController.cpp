@@ -13,8 +13,13 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwa
     _mcp->pinMode(LED_STATUS, OUTPUT);
     _mcp->pinMode(LED_DATA_TRANSFER, OUTPUT);_mcp->digitalWrite(LED_DATA_TRANSFER, LOW);
     _mcp->pinMode(LED_ERROR_STATUS, OUTPUT);_mcp->digitalWrite(LED_ERROR_STATUS, LOW);
-    _mcp->pinMode(LED_TEMPERATURE, OUTPUT);_mcp->digitalWrite(LED_TEMPERATURE, LOW);
-    _mcp->pinMode(LED_PRESSURE, OUTPUT);_mcp->digitalWrite(LED_PRESSURE, LOW);
+
+    _mcp->pinMode(LED_UNIVERSAL_RGB_R, OUTPUT);_mcp->digitalWrite(LED_UNIVERSAL_RGB_R, HIGH);
+    _mcp->pinMode(LED_UNIVERSAL_RGB_G, OUTPUT);_mcp->digitalWrite(LED_UNIVERSAL_RGB_G, HIGH);
+    _mcp->pinMode(LED_UNIVERSAL_RGB_B, OUTPUT);_mcp->digitalWrite(LED_UNIVERSAL_RGB_B, HIGH);
+
+    _mcp->pinMode(LED_PRESSURE_RED, OUTPUT);_mcp->digitalWrite(LED_PRESSURE_RED, LOW);
+    _mcp->pinMode(LED_PRESSURE_GREEN, OUTPUT);_mcp->digitalWrite(LED_PRESSURE_GREEN, LOW);
 
     _pollutionRGBLed->setColor(0, 0, 0);
 
@@ -39,8 +44,12 @@ void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
 void LEDIndicatorsController::setWeatherStatusLed(WeatherMonitorData weatherData){    
     if(!weatherData.isOutsideMeteoDataReceived) return;
 
-    _mcp->digitalWrite(LED_TEMPERATURE, weatherData.temperatureOutside <= 0);
-    _mcp->digitalWrite(LED_PRESSURE, weatherData.getPressureLevel() != PressureLevel::Normal);
+    //_mcp->digitalWrite(LED_TEMPERATURE, weatherData.temperatureOutside <= 0);
+
+    if(weatherData.getPressureLevel() < PressureLevel::Normal)_mcp->digitalWrite(LED_PRESSURE_RED, HIGH);
+    else _mcp->digitalWrite(LED_PRESSURE_RED, LOW);
+    if(weatherData.getPressureLevel() > PressureLevel::Normal)_mcp->digitalWrite(LED_PRESSURE_GREEN, HIGH);
+    else _mcp->digitalWrite(LED_PRESSURE_GREEN, LOW);
 }
 
 void LEDIndicatorsController::updateSystemStatusLed(){
@@ -69,6 +78,8 @@ void LEDIndicatorsController::updateSystemStatusLed(){
             _mcp->digitalWrite(LED_ERROR_STATUS, _fastBlinkingLedOn);
     }
     else {
+        _mcp->digitalWrite(LED_ERROR_STATUS, LOW);
+        
         switch(globalSystemState->powerStatus){
             case PowerStatus::Unknown:
             case PowerStatus::Regular:
@@ -106,7 +117,12 @@ void LEDIndicatorsController::updateSystemStatusLed(){
 }
 
 void LEDIndicatorsController::clearAllIndicators(){
-    _mcp->digitalWrite(LED_TEMPERATURE, LOW);
-    _mcp->digitalWrite(LED_PRESSURE, LOW);
+    _mcp->digitalWrite(LED_UNIVERSAL_RGB_R, HIGH);
+    _mcp->digitalWrite(LED_UNIVERSAL_RGB_G, HIGH);
+    _mcp->digitalWrite(LED_UNIVERSAL_RGB_B, HIGH);
+
+    _mcp->digitalWrite(LED_PRESSURE_RED, LOW);
+    _mcp->digitalWrite(LED_PRESSURE_GREEN, LOW);
+
     _pollutionRGBLed->setColor(0, 0, 0);
 }

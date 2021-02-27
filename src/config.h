@@ -28,18 +28,24 @@ const uint8_t RGB_LED_B_PIN = D0;
 
 const uint8_t DHT_DATA_PIN = D5;
 
-const uint8_t LED_POWER = MCP_A0;
-const uint8_t LED_POWER_NIGHT = MCP_B0;
-const uint8_t LED_STATUS = MCP_A1;
-const uint8_t LED_DATA_TRANSFER = MCP_B1;
-const uint8_t LED_ERROR_STATUS = MCP_B2;
-const uint8_t LED_TEMPERATURE = MCP_A2;
-const uint8_t LED_PRESSURE = MCP_A3;
+const uint8_t LED_POWER = MCP_A3;
+const uint8_t LED_POWER_NIGHT = MCP_A2;
 
-const uint8_t UP_BUTTON_PIN = MCP_A4;
-const uint8_t LEFT_BUTTON_PIN = MCP_A5;
-const uint8_t DOWN_BUTTON_PIN = MCP_A6;
-const uint8_t RIGHT_BUTTON_PIN = MCP_A7;
+const uint8_t LED_STATUS = MCP_B1;
+const uint8_t LED_DATA_TRANSFER = MCP_A0;
+const uint8_t LED_ERROR_STATUS = MCP_B0;
+
+const uint8_t LED_UNIVERSAL_RGB_R = MCP_B3;
+const uint8_t LED_UNIVERSAL_RGB_G = MCP_B4;
+const uint8_t LED_UNIVERSAL_RGB_B = MCP_B5;
+
+const uint8_t LED_PRESSURE_RED = MCP_B2;
+const uint8_t LED_PRESSURE_GREEN = MCP_A1;
+
+const uint8_t UP_BUTTON_PIN = MCP_A7;
+const uint8_t RIGHT_BUTTON_PIN = MCP_A6;
+const uint8_t DOWN_BUTTON_PIN = MCP_A5;
+const uint8_t LEFT_BUTTON_PIN = MCP_A4;
 
 struct BackendClientConfig {
     const char* WifiSSID = "xppl";
