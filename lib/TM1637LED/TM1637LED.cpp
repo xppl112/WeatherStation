@@ -29,9 +29,15 @@ void TM1637LED::print(float number){
 }
 
 void TM1637LED::printDecimalWithUnit(float number, char unit){
-    clear();
-    _display->display(number);
-    _display->display(String(unit), false, false, 3);
+    auto str = String(number);
+    if(number < 0) str = str.substring(0, 3);
+    else if(number >= 0 && number < 10) str = str.substring(0, 2);
+    else str = str.substring(0, 3);
+    str +=unit;  
+    if(str.length() == 2)str = "  "+str;  
+    else if(str.length() == 3)str = " "+str;  
+
+    _display->display(str);
 }
 
 void TM1637LED::toggleColon(){

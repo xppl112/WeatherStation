@@ -74,6 +74,8 @@ void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 }
 
 void UIController::redrawUI(){
+    _ledDisplayController->showOutdoorTemperature(_currentWeather);
+    
     if(globalSystemState->isNightMode && !_isInteraction){
         _ledIndicators->clearAllIndicators();
     }

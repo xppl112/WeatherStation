@@ -92,6 +92,7 @@ PmsData PlantowerSensor::readData(uint16_t timeout)
 
 PmsData PlantowerSensor::readDataSyncronioslyAndSleep()
 {
+    return FAILED_DATA;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if(!isConnected) return FAILED_DATA;
 
     this->wakeUp();

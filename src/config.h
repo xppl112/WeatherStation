@@ -15,8 +15,8 @@ const uint8_t OLED_I2C_ADDR = 0x3C;
 const uint8_t BME_I2C_ADDR = 0x76;
 const uint8_t MCP_EXTENDER_I2C_ADDR = 0x20;
 
-const uint8_t TM1637_CLK_PIN = D6;
-const uint8_t TM1637_DATA_PIN = D7;
+const uint8_t TM1637_CLK_PIN = D7;
+const uint8_t TM1637_DATA_PIN = D6;
 
 const uint8_t RGB_LED_R_PIN = D4;
 const uint8_t RGB_LED_G_PIN = D3;

@@ -9,7 +9,7 @@ void LEDDisplayController::clearScreen(){
 }
 
 void LEDDisplayController::showOutdoorTemperature(WeatherMonitorData weatherData){
-    _display->printDecimalWithUnit(weatherData.temperatureOutside, 'c');
+    _display->printDecimalWithUnit(weatherData.temperatureInside, 'c');
 }
 
 void LEDDisplayController::showAirPollution(WeatherMonitorData weatherData){
