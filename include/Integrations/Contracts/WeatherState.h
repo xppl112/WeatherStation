@@ -14,6 +14,4 @@ public:
     int PM1_0;
     int PM2_5;
     int PM_10_0;
-
-    float TVOC;
 };

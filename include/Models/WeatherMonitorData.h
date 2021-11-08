@@ -83,10 +83,6 @@ struct WeatherMonitorData {
             doc["PM2_5"] = PM2_5;
             doc["PM_10_0"] = PM_10_0;
         }
-/*
-        doc["TVOC"] = TVOC;
-        doc["H2CO"] = H2CO;
-        doc["NO2"] = NO2;*/
 
         String output;
         serializeJson(doc, output);

@@ -2,8 +2,8 @@
 #define OutdoorMeteoSensor_H
 
 #include "HardwareModules/IHardwareModule.h"
-#include "BME280Sensor.h"
 
+#include "BME280Sensor.h"
 #define FAILED_MEASUREMENTS_TRESHOLD 2
 
 class OutdoorMeteoSensor : public IHardwareModule

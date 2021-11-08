@@ -5,7 +5,7 @@
 extern GlobalSystemState* globalSystemState;
 
 SystemModeController::SystemModeController(){   
-    _nightModeTimer = new Ticker(60 * 1000, NULL, MILLIS);
+    _nightModeTimer = new Ticker(LIGHT_SCAN_INTERVAL_SECONDS * 1000, NULL, MILLIS);
     _nightModeTimer->start();
 }
 
@@ -18,12 +18,10 @@ void SystemModeController::refresh() {
     }    
 }
 
-void SystemModeController::checkNightMode() {    
-    auto currentTimestamp = globalSystemState->getCurrentTimestamp();
-    if(currentTimestamp == 0) return;
-
-    auto curentHour = DateTimeUtils::getHourFromTimestamp(currentTimestamp, TIMEZONE_HOURS_OFFSET);
-    if(curentHour >= NIGHT_MODE_HOUR_FROM && curentHour < NIGHT_MODE_HOUR_TO){
+void SystemModeController::checkNightMode() {   
+     
+    //TODO
+    if(true){
         globalSystemState->setNightMode(true);
     }
     else {

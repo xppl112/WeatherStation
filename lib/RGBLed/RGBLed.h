@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+const int PWMRANGE = 255;
+
 class RGBLed
 {
 public:

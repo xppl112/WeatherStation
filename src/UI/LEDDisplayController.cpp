@@ -9,9 +9,17 @@ void LEDDisplayController::clearScreen(){
 }
 
 void LEDDisplayController::showOutdoorTemperature(WeatherMonitorData weatherData){
-    _display->printDecimalWithUnit(weatherData.temperatureInside, 'c');
+    _display->printDecimalWithUnit(weatherData.temperatureOutside, 'c');
+}
+
+void LEDDisplayController::showOutdoorHumidity(WeatherMonitorData weatherData){
+    _display->printDecimalWithUnit(weatherData.humidityOutside, '%');
+}
+
+void LEDDisplayController::showIndoorTemperature(WeatherMonitorData weatherData){
+    _display->printDecimalWithUnit(weatherData.temperatureInside, '_');
 }
 
 void LEDDisplayController::showAirPollution(WeatherMonitorData weatherData){
-    _display->printDecimalWithUnit(weatherData.calculateAQI(), 'a');
+    _display->printDecimalWithUnit(weatherData.PM2_5, '^');
 }

@@ -12,6 +12,8 @@ bool EspWifiClient::connectWifi(const char* ssid, const char* password, uint8_t 
     _wifiPassword = password;
     isWifiConnected = false;
 
+    wiFiClient = new WiFiClient();
+
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     _wifiStatus = WiFi.waitForConnectResult(timeoutSeconds * 1000);
@@ -29,7 +31,7 @@ HttpResponse EspWifiClient::sendGetRequest(String host, String resource, uint8_t
     HttpResponse httpResponse;
 
     HTTPClient client;
-    client.begin(host + resource);
+    client.begin(*wiFiClient, host + resource);
     client.setTimeout(timeoutSeconds * 1000);
 
     int resultCode = client.GET();
@@ -55,7 +57,7 @@ HttpResponse EspWifiClient::sendPostJsonRequest(String host, String resource, St
     HttpResponse httpResponse;
 
     HTTPClient client;
-    client.begin(host + resource);
+    client.begin(*wiFiClient, host + resource);
     client.addHeader("Content-Type", "application/json");
     client.setTimeout(timeoutSeconds * 1000);    
 

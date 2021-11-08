@@ -2,9 +2,9 @@
 #define INPUTSCONTROLLER_H
 
 #include "HardwareModules/HardwareModulesRegistry.h"
-#include <BounceMcp.h>
+#include <Bounce2.h>
 
-enum class ButtonPressed {NONE, LEFT, UP, RIGHT, DOWN, LEFTRIGHT};
+enum class ButtonPressed {NONE, TOUCH};
 
 class InputsController
 {
@@ -13,12 +13,9 @@ public:
     ButtonPressed updateInputs();
 
 private:
-    Button* _leftButton;
-    Button* _rightButton;    
-    Button* _upButton;
-    Button* _downButton;
+    Bounce2::Button* _touchButton;
 
-    Button* registerButton(HardwareModulesRegistry* hardwareModulesRegistry, uint8_t buttonPin);
+    Bounce2::Button* registerButton(HardwareModulesRegistry* hardwareModulesRegistry, uint8_t buttonPin);
 };
 
 #endif

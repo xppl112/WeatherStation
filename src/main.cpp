@@ -5,14 +5,12 @@
 #include "ApplicationServices/SystemModeController.h"
 #include "GlobalObjects/GlobalSystemState.h"
 #include "HardwareModules/HardwareModulesRegistry.h"
-#include "Healthchecks/HealthcheckController.h"
 
 GlobalSystemState* globalSystemState;
 HardwareModulesRegistry* hardwareModulesRegistry;
 WeatherMonitor* weatherMonitor;
 UIController* uiController;
 BackendIntegrator* backendIntegrator;
-HealthcheckController* healthcheckController;
 SystemModeController* systemModeController;
 void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData);
 void onSystemStateUpdatedEventHandler();
@@ -20,49 +18,26 @@ void onSystemStateUpdatedEventHandler();
 void setup() { 
     globalSystemState = new GlobalSystemState();
     hardwareModulesRegistry = new HardwareModulesRegistry();
-    hardwareModulesRegistry->reconnectAllDisconnectedDevices(true);    
-    healthcheckController = new HealthcheckController(hardwareModulesRegistry);
+    hardwareModulesRegistry->reconnectAllDisconnectedDevices(true);
 
-    uiController = new UIController(hardwareModulesRegistry, healthcheckController);
+    uiController = new UIController(hardwareModulesRegistry);
     weatherMonitor = new WeatherMonitor(hardwareModulesRegistry);
-    backendIntegrator = new BackendIntegrator(healthcheckController); 
+    backendIntegrator = new BackendIntegrator(); 
     systemModeController = new SystemModeController(); 
  
     hardwareModulesRegistry->reconnectAllDisconnectedDevices(false);  
     weatherMonitor->addUpdatedEventHandler(onWeatherUpdatedEventHandler);
     weatherMonitor->run();
-
-    globalSystemState->addUpdatedEventHandler(onSystemStateUpdatedEventHandler);
 }
 
 void loop() {
-    try {
-        healthcheckController->updateTimers();
-        uiController->updateUI();
-        weatherMonitor->updateTimers();
-        systemModeController->refresh();
-        backendIntegrator->updateTimers();
-    }
-    catch(const std::exception& e){
-        globalSystemState->addError(
-            SystemErrorCode::CriticalException,
-            SystemErrorSeverity::SystemError,
-            "main::loop: " + String(e.what())
-        );       
-    }
-    catch (...) {
-        globalSystemState->addError(
-            SystemErrorCode::CriticalException,
-            SystemErrorSeverity::SystemError,
-            "main::loop");  
-    }
+    uiController->updateUI();
+    weatherMonitor->updateTimers();
+    systemModeController->refresh();
+    backendIntegrator->updateTimers();
 }
 
 void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData){
     uiController->onWeatherUpdated(weatherMonitorData);
     backendIntegrator->onWeatherUpdated(weatherMonitorData);
-}
-
-void onSystemStateUpdatedEventHandler(){
-    uiController->updateUI();
 }

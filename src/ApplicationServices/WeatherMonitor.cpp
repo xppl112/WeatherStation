@@ -14,8 +14,7 @@ void WeatherMonitor::run(){
 }
 
 void WeatherMonitor::updateTimers(){
-    if(globalSystemState->systemHealth != HealthStatus::HEALTH_ERROR)
-        _timer->update();
+    _timer->update();
 
     if(_timer->state() == FIRED){
         if(state == WeatherMonitorState::IDLE)startMeasuring();
@@ -31,7 +30,6 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 void WeatherMonitor::startMeasuring(){
     _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS * 1000);
     state = WeatherMonitorState::MEASURING;    
-    globalSystemState->setSystemStatus(SystemStatus::Measuring);    
     _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
     
     _hardwareModulesRegistry->airParticiplesSensor->beginMeasurement();
@@ -70,6 +68,5 @@ void WeatherMonitor::finishMeasuring(){
     }
 
     state = WeatherMonitorState::IDLE;
-    globalSystemState->setSystemStatus(SystemStatus::Idle);    
     if(_onUpdateCallback != NULL) _onUpdateCallback(data);
 }
