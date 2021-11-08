@@ -171,7 +171,7 @@ public:
         buffer_ = "";
         for (decltype(value.length()) counter{}; counter < value.length(); ++counter) {
             auto d = toDisplayDigit(value[counter]);            
-            if (d == 0x80u && buffer_.length() > 0) {
+            if (d == 0x80 && buffer_.length() > 0) {
                 buffer_[buffer_.length() - 1] |= static_cast<char>(0x80u);
             } else
                 buffer_.concat(static_cast<char>(d));                

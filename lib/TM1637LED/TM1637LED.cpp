@@ -17,6 +17,7 @@ bool TM1637LED::connect(){
 void TM1637LED::clear(){
     _display->clearScreen();
     _display->colonOff();
+    _display->refresh();
 }
 
 void TM1637LED::print(String str){
@@ -25,20 +26,21 @@ void TM1637LED::print(String str){
 }
 
 void TM1637LED::print(float number){
-    clear();
+    
     _display->display(number);
 }
 
 void TM1637LED::printDecimalWithUnit(float number, char unit){
-    auto str = String(number);
-    if(number < 0) str = str.substring(0, 3);
-    else if(number >= 0 && number < 10) str = str.substring(0, 2);
+    //clear();
+
+    auto str = String((int)number)+"."+String(number*10 - (int)number*10);
+    if(number < 0) str = str.substring(0, 4);
+    else if(number >= 0 && number < 10) str = str.substring(0, 3);
     else str = str.substring(0, 4);
     str +=unit;  
-    if(str.length() == 2)str = "  "+str;  
-    else if(str.length() == 3)str = " "+str;  
-    
-    _display->display(str);
+
+    auto offset = 4 - (str.length()-1);
+    _display->display(str, true, false, offset);
 }
 
 void TM1637LED::toggleColon(){

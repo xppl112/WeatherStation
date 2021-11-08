@@ -14,8 +14,10 @@ void AirParticiplesSensor::reset(){
 }
 
 void AirParticiplesSensor::beginMeasurement(){
-    if(!_sensor->isConnected)
-        return;
+    if(!_sensor->isConnected){
+        connect();
+        if(!_sensor->isConnected)return;
+    }
 
     _sensor->wakeUp();
 }
