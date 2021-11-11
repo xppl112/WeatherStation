@@ -3,8 +3,7 @@
 #include "Config.h"
 extern GlobalSystemState* globalSystemState;
 
-UIController::UIController(
-    HardwareModulesRegistry* hardwareModulesRegistry)
+UIController::UIController(HardwareModulesRegistry* hardwareModulesRegistry)
 {
     _ledDisplayController = new LEDDisplayController(hardwareModulesRegistry);
     _ledIndicators = new LEDIndicatorsController(hardwareModulesRegistry);
@@ -34,12 +33,9 @@ void UIController::onWeatherUpdated(WeatherMonitorData weatherMonitorData){
 }
 
 void UIController::redrawUI(){
-/*    if(globalSystemState->isNightMode){
-        _ledIndicators->clearAllIndicators();
-    }
-    else {*/
-        _ledIndicators->setPollutionLevel(_currentWeather);
-    /*}*/
+    _ledIndicators->setPollutionLevel(_currentWeather);
+    
+    _ledDisplayController->setBrightness(globalSystemState->lightLevelPercent);
   
     switch (_currentLedDisplayMode){
         case LedDisplayMode::OFF: _ledDisplayController->clearScreen();break;

@@ -23,7 +23,7 @@ void setup() {
     uiController = new UIController(hardwareModulesRegistry);
     weatherMonitor = new WeatherMonitor(hardwareModulesRegistry);
     backendIntegrator = new BackendIntegrator(); 
-    systemModeController = new SystemModeController(); 
+    systemModeController = new SystemModeController(hardwareModulesRegistry); 
  
     hardwareModulesRegistry->reconnectAllDisconnectedDevices(false);  
     weatherMonitor->addUpdatedEventHandler(onWeatherUpdatedEventHandler);

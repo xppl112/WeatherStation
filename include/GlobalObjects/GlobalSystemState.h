@@ -9,6 +9,7 @@ public:
     }
 
     volatile bool isNightMode = false;
+    volatile uint8_t lightLevelPercent = 100;
     volatile uint8_t unsyncronizedWeatherReports = 0;
 
     unsigned long getCurrentTimestamp(){
@@ -24,6 +25,10 @@ public:
 
     void setNightMode(bool nightMode){
         isNightMode = nightMode; 
+    }
+
+    void setLightLevel(uint8_t lightLevel){
+        lightLevelPercent = lightLevel; 
     }
 
 private:

@@ -30,7 +30,7 @@ struct BackendClientConfig {
 
     const char* ServerHost = "http://weather.liashko.space";
     const char* ServerApiGetTimeUrl = "/api/time";
-    const char* ServerApiPostWeatherDataUrl = "/api/weather";
+    const char* ServerApiPostWeatherDataUrl = "/api/weather/postoutdoorreport";
 
     int BatchRequestsMaxSize = 5;
 };
@@ -38,12 +38,12 @@ struct BackendClientConfig {
 const int DATA_COLLECTION_CAPACITY = 100;
 
 const int LIGHT_SCAN_INTERVAL_SECONDS = 60;
-const int WEATHER_MONITOR_INTERVAL_SECONDS = 20;
-const int WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 30;
+const int WEATHER_MONITOR_INTERVAL_SECONDS = 30;
+const int WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 60;
 
-const int TIME_UPDATE_INTERVAL_SECONDS = 100;
+const int TIME_UPDATE_INTERVAL_SECONDS = 600;
 
 // night-mode
-const int WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS = 300;
+const int WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS = 120;
 
 #endif

@@ -8,7 +8,8 @@ LightSensor::LightSensor(uint8_t lightSensorPin){
 
 uint8_t LightSensor::getLightLevel(){
     auto analogValue = getDataFromAnalogPin(_lightSensorPin);
-    return (uint8_t)(analogValue * 100 / 1024);
+    if(analogValue > 300) analogValue = 300; // For this circut 300 is maximum
+    return (uint8_t)(analogValue * 100 / 300);
 }
 
 float LightSensor::getDataFromAnalogPin(uint8_t pin){

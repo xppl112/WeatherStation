@@ -1,13 +1,15 @@
 #include "Ticker.h"
+#include "HardwareModules/HardwareModulesRegistry.h"
 
 class SystemModeController
 {
 public:
-    SystemModeController();
+    SystemModeController(HardwareModulesRegistry* hardwareModulesRegistry);
     void refresh();
 
 private:
-    void checkNightMode();
+    void checkLightLevel();
 
     Ticker* _nightModeTimer;
+    LightSensor* _lightSensor;
 };

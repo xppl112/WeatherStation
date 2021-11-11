@@ -20,26 +20,32 @@ void TM1637LED::clear(){
     _display->refresh();
 }
 
+void TM1637LED::setBrightness(uint8_t brightnessLevelPercent){
+    _display->changeBrightness(1 + brightnessLevelPercent * (8 - 1) / 100);
+    
+   _display->refresh();
+}
+
 void TM1637LED::print(String str){
     clear();
     _display->display(str);
 }
 
-void TM1637LED::print(float number){
-    
-    _display->display(number);
+void TM1637LED::printIntWithUnit(int number, char unit){
+    auto str = String(number) + String(unit);
+    auto offset = 4 - (str.length());
+    _display->colonOff();
+    _display->display(str, true, false, offset);
 }
 
 void TM1637LED::printDecimalWithUnit(float number, char unit){
-    //clear();
+    auto decimalPlacesCount = number > -10 ? 1 : 0;
+    auto str = String(number, decimalPlacesCount);
 
-    auto str = String((int)number)+"."+String(number*10 - (int)number*10);
-    if(number < 0) str = str.substring(0, 4);
-    else if(number >= 0 && number < 10) str = str.substring(0, 3);
-    else str = str.substring(0, 4);
-    str +=unit;  
+    if(decimalPlacesCount == 0)_display->colonOff();
+    str += String(unit);  
 
-    auto offset = 4 - (str.length()-1);
+    auto offset = 4 - (str.length()-decimalPlacesCount);
     _display->display(str, true, false, offset);
 }
 

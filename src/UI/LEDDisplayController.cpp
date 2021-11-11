@@ -8,6 +8,14 @@ void LEDDisplayController::clearScreen(){
     _display->clear();
 }
 
+void LEDDisplayController::setBrightness(uint8_t brightnessLevelPercent){
+    if(brightnessLevelPercent < 10) brightnessLevelPercent = 10;
+    if(_displayBrightnessLevelPercent != brightnessLevelPercent){
+        _displayBrightnessLevelPercent = brightnessLevelPercent;
+        _display->setBrightness(brightnessLevelPercent);
+    }
+}
+
 void LEDDisplayController::showOutdoorTemperature(WeatherMonitorData weatherData){
     _display->printDecimalWithUnit(weatherData.temperatureOutside, 'c');
 }
@@ -21,5 +29,5 @@ void LEDDisplayController::showIndoorTemperature(WeatherMonitorData weatherData)
 }
 
 void LEDDisplayController::showAirPollution(WeatherMonitorData weatherData){
-    _display->printDecimalWithUnit(weatherData.PM2_5, '^');
+    _display->printIntWithUnit(weatherData.PM2_5, '^');
 }

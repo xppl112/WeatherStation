@@ -16,6 +16,9 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareModulesRegistry* hardwa
 
 void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
     if(!weatherData.isPMDataReceived) return;
+
+    auto ledBrightness = globalSystemState->lightLevelPercent;
+    _pollutionRGBLed->setBrightess(ledBrightness);
     
     int aqi = weatherData.calculateAQI();
     if(aqi >= (int)AQILevel::Good && aqi < (int)AQILevel::Moderate) _pollutionRGBLed->setColor(0, 255, 0);

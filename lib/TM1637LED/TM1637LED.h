@@ -12,9 +12,10 @@ public:
   bool connect();
   void clear();
   void print(String str);
-  void print(float number);
+  void printIntWithUnit(int number, char unit);
   void printDecimalWithUnit(float number, char unit);
   void toggleColon();
+  void setBrightness(uint8_t brightnessLevelPercent);
 
   bool isConnected;
   bool isColonShowed = false;
