@@ -35,6 +35,8 @@ void loop() {
     weatherMonitor->updateTimers();
     systemModeController->refresh();
     backendIntegrator->updateTimers();
+
+    //systemModeController->sleep();
 }
 
 void onWeatherUpdatedEventHandler(WeatherMonitorData weatherMonitorData){

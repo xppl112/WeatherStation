@@ -64,24 +64,24 @@ struct WeatherMonitorData {
     }
 
     String toJson(){
-        DynamicJsonDocument doc(1024);
+        DynamicJsonDocument doc(1408);
 
-        doc["timeStampOfStart"] = timeStampOfStart;
-        doc["timeStampOfFinish"] = timeStampOfFinish;
+        doc["tss"] = timeStampOfStart;
+        doc["tsf"] = timeStampOfFinish;
 
         if(isOutsideMeteoDataReceived){
-            doc["temperatureOutside"] = temperatureOutside;
-            doc["humidityOutside"] = humidityOutside;
-            doc["pressureOutside"] = pressureOutside;
+            doc["to"] = temperatureOutside;
+            doc["ho"] = humidityOutside;
+            doc["po"] = pressureOutside;
         }
         if(isInsideMeteoDataReceived){
-            doc["temperatureInside"] = temperatureInside;
-            doc["humidityInside"] = humidityInside;
+            doc["ti"] = temperatureInside;
+            doc["hi"] = humidityInside;
         }
         if(isPMDataReceived){
-            doc["PM1_0"] = PM1_0;
-            doc["PM2_5"] = PM2_5;
-            doc["PM_10_0"] = PM_10_0;
+            doc["p1"] = PM1_0;
+            doc["p2"] = PM2_5;
+            doc["p10"] = PM_10_0;
         }
 
         String output;

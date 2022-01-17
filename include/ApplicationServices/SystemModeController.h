@@ -5,6 +5,7 @@ class SystemModeController
 {
 public:
     SystemModeController(HardwareModulesRegistry* hardwareModulesRegistry);
+    void sleep();
     void refresh();
 
 private:

@@ -6,8 +6,14 @@ extern GlobalSystemState* globalSystemState;
 
 SystemModeController::SystemModeController(HardwareModulesRegistry* hardwareModulesRegistry){ 
     _lightSensor = hardwareModulesRegistry->lightSensor;
-    _nightModeTimer = new Ticker(LIGHT_SCAN_INTERVAL_SECONDS * 1000, NULL, MILLIS);
+    _nightModeTimer = new Ticker(SENSORS_SCAN_INTERVAL_SECONDS * 1000, NULL, MILLIS);
     _nightModeTimer->start();
+}
+
+void SystemModeController::sleep() {
+    //TODO: sleep logic with interuption by button
+    //sleep for SENSORS_SCAN_INTERVAL_SECONDS
+    delay(SENSORS_SCAN_INTERVAL_SECONDS*1000);
 }
 
 void SystemModeController::refresh() {   
@@ -26,10 +32,12 @@ void SystemModeController::checkLightLevel() {
     lightLevel = lightLevel * 100 / 30;
     globalSystemState->setLightLevel(lightLevel);
 
+    //Use Server response to set night mode
+/*
     if(lightLevel <= 10){
         globalSystemState->setNightMode(true);
     }
     else {
         globalSystemState->setNightMode(false);
-    }
+    }*/
 }

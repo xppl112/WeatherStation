@@ -13,10 +13,11 @@ public:
 private:
     BackendClient* _backendClient;
     Ticker* _timeUpdateTimer;
+    uint8_t skippedCyclesCount = 0;
     
-    void updateServerTime();
+    bool updateServerTime();
     
-    std::queue<WeatherMonitorData> _weatherMonitorDataCollection;
+    std::vector<WeatherMonitorData> _weatherMonitorDataCollection;
 
     void collectWeatherUpdate(WeatherMonitorData weatherMonitorData);
 };

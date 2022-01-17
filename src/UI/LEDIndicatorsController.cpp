@@ -18,6 +18,7 @@ void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
     if(!weatherData.isPMDataReceived) return;
 
     auto ledBrightness = globalSystemState->lightLevelPercent;
+    if(ledBrightness < 10) ledBrightness = 10;
     _pollutionRGBLed->setBrightess(ledBrightness);
     
     int aqi = weatherData.calculateAQI();
@@ -25,7 +26,7 @@ void LEDIndicatorsController::setPollutionLevel(WeatherMonitorData weatherData){
     else if(aqi >= (int)AQILevel::Moderate && aqi < (int)AQILevel::UnhealthyForSensitiveGroups) _pollutionRGBLed->setColor(255, 127, 0);
     else if(aqi >= (int)AQILevel::UnhealthyForSensitiveGroups && aqi < (int)AQILevel::Unhealthy) _pollutionRGBLed->setColor(255, 32, 0);
     else if(aqi >= (int)AQILevel::Unhealthy && aqi < (int)AQILevel::VeryUnhealthy) _pollutionRGBLed->setColor(255, 0, 0);
-    else if(aqi >= (int)AQILevel::VeryUnhealthy && aqi < (int)AQILevel::Hazardous) _pollutionRGBLed->setColor(255, 0, 16);
+    else if(aqi >= (int)AQILevel::VeryUnhealthy && aqi < (int)AQILevel::Hazardous) _pollutionRGBLed->setColor(255, 0, 32);
     else if(aqi >= (int)AQILevel::Hazardous) _pollutionRGBLed->setColor(120, 0, 255);
 }
 

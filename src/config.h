@@ -30,20 +30,25 @@ struct BackendClientConfig {
 
     const char* ServerHost = "http://weather.liashko.space";
     const char* ServerApiGetTimeUrl = "/api/time";
-    const char* ServerApiPostWeatherDataUrl = "/api/weather/postoutdoorreport";
+    const char* ServerApiPostWeatherDataUrl = "/api/weather/PostOutdoorReportsBatch";
 
-    int BatchRequestsMaxSize = 5;
+    const uint8_t BatchMinSize = 1;
+    const uint8_t BatchMaxSize = 10;
+
+    const uint8_t RequestsSeriesMaxSize = 5;
 };
 
 const int DATA_COLLECTION_CAPACITY = 100;
 
-const int LIGHT_SCAN_INTERVAL_SECONDS = 60;
-const int WEATHER_MONITOR_INTERVAL_SECONDS = 30;
-const int WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS = 60;
+const int SENSORS_SCAN_INTERVAL_SECONDS = 30;
+const uint8_t PM_SENSOR_MEASUREMENT_DURATION_CYCLES = 2;
+const uint8_t PM_SENSOR_CALMDOWN_DURATION_CYCLES = 4;
 
-const int TIME_UPDATE_INTERVAL_SECONDS = 600;
+const bool SENSORS_INERTION_STABILIZATION = true;
+const uint8_t PM_SENSOR_INERTION_STABILIZATION_COUNT = 3;//overrides SENSORS_INERTION_STABILIZATION, set 1 to turn off
 
 // night-mode
-const int WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS = 120;
+const uint8_t SKIP_MEASUREMENT_CYCLES_IN_NIGHT_MODE = 4;//0 = dont skip any cycle
+const uint8_t SKIP_SENDING_DATA_CYCLES_IN_NIGHT_MODE = 5;//0 = dont skip any cycle
 
 #endif
