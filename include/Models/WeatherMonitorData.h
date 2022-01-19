@@ -64,7 +64,7 @@ struct WeatherMonitorData {
     }
 
     String toJson(){
-        DynamicJsonDocument doc(1408);
+        DynamicJsonDocument doc(2048);
 
         doc["tss"] = timeStampOfStart;
         doc["tsf"] = timeStampOfFinish;

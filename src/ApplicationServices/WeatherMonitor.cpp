@@ -28,7 +28,7 @@ void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback c
 }
 
 void WeatherMonitor::startMeasuring(){
-    _timer->interval(WEATHER_MONITOR_MEASUREMENT_DURATION_SECONDS * 1000);
+    _timer->interval(SENSORS_SCAN_INTERVAL_SECONDS * PM_SENSOR_MEASUREMENT_DURATION_CYCLES * 1000);
     state = WeatherMonitorState::MEASURING;    
     _startMeasuringTimestamp = globalSystemState->getCurrentTimestamp();
     
@@ -36,8 +36,8 @@ void WeatherMonitor::startMeasuring(){
 }
 
 void WeatherMonitor::finishMeasuring(){
-    if(globalSystemState->isNightMode)_timer->interval(WEATHER_MONITOR_INTERVAL_NIGHT_SECONDS * 1000);
-    else _timer->interval(WEATHER_MONITOR_INTERVAL_SECONDS * 1000);
+    if(globalSystemState->isNightMode)_timer->interval(SENSORS_SCAN_INTERVAL_SECONDS * PM_SENSOR_CALMDOWN_DURATION_CYCLES * SKIP_MEASUREMENT_CYCLES_IN_NIGHT_MODE * 1000);
+    else _timer->interval(SENSORS_SCAN_INTERVAL_SECONDS * PM_SENSOR_CALMDOWN_DURATION_CYCLES * 1000);
     WeatherMonitorData data;
 
     PmsData airParticiplesData = _hardwareModulesRegistry->airParticiplesSensor->endMeasurement();

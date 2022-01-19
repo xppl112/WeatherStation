@@ -5,14 +5,14 @@
 EspWifiClient::EspWifiClient(){
     _wifiStatus = WL_IDLE_STATUS;
     isWifiConnected = false;
+
+    wiFiClient = new WiFiClient();
 }
 
 bool EspWifiClient::connectWifi(const char* ssid, const char* password, uint8_t timeoutSeconds){
     _wifiSsid = ssid;
     _wifiPassword = password;
     isWifiConnected = false;
-
-    wiFiClient = new WiFiClient();
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);

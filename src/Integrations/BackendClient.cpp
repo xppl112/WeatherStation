@@ -37,7 +37,7 @@ SynchronizationDataResponse BackendClient::SynchronizeData(std::vector<WeatherMo
 
             uint8_t reportN;
             String requestBody ="[";
-            for(reportN = 0; reportN < _config.BatchMaxSize || reportN >= weatherDataCollection->size(); reportN++){
+            for(reportN = 0; reportN < _config.BatchMaxSize && reportN < weatherDataCollection->size(); reportN++){
                 auto report = weatherDataCollection->at(reportN);
                 requestBody+=report.toJson()+",";
             }
